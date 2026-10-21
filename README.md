@@ -1,114 +1,74 @@
+<div align="center">
+
 # tuiksdmx
 
-<!-- README: first public-facing draft, 20 October 2026. -->
+**An authenticated, metadata-driven R client for the TÜİK (Turkish Statistical Institute) SDMX REST API.**
 
-**An authenticated, metadata-driven R client for the Turkish Statistical Institute (TÜİK / TURKSTAT) SDMX REST service.**
+Discover dataflows · Understand structures · Build validated queries · Retrieve statistical data
 
-`tuiksdmx` helps you discover statistical datasets, inspect their structure and codes, and retrieve observations as R tables. It supports both a short route for everyday use and DSD-aware workflows for reproducible, precisely filtered requests.
+[![R-CMD-check](https://github.com/MFatihTuzen/tuiksdmx/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/MFatihTuzen/tuiksdmx/actions/workflows/R-CMD-check.yaml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-AB2328.svg)](LICENSE.md)
+[![R ≥ 4.1.0](https://img.shields.io/badge/R-%E2%89%A5%204.1.0-555555.svg)](DESCRIPTION)
+[![Status: Development](https://img.shields.io/badge/status-development-AB2328.svg)](NEWS.md)
 
-> **Development status:** `0.0.0.9000` is a development version. The package is not presented here as available from CRAN. TÜİK SDMX endpoints require authentication. Examples below use a real Dataflow ID verified during development, but service content, structures, and access conditions can change.
+[Get started](#quick-start) · [Installation](#installation) · [Authentication](#authentication) · [Guides](#guides) · [License](#license)
 
-## What you can do
+</div>
 
-- Find Dataflows and inspect their dimensions **before downloading observations**.
-- Examine dimension codes and their Turkish/English descriptions.
-- Download data by supplying a Dataflow ID, or reuse a Dataflow profile for more detailed work.
-- Select observation periods with `start_period` and `end_period`.
-- Use complete SDMX keys for targeted retrieval, or explicitly allow broad downloads followed by local filtering.
-- Preserve original SDMX codes and optionally add Codelist labels.
-- Distinguish codes defined by a Codelist from codes **observed** in data for a specified period.
+> [!IMPORTANT]
+> **Development release (`0.0.0.9000`).** `tuiksdmx` is currently distributed through GitHub, not CRAN. TÜİK SDMX endpoints require authentication. Dataflow structures and service behaviour may change; examples below use a Dataflow verified during development.
+
+## Why tuiksdmx?
+
+SDMX datasets are multidimensional. To construct a meaningful query, you may need to know the Dataflow, its data structure definition (DSD), dimension order, codes and time range. **`tuiksdmx` uses this metadata to make the process easier and more reproducible**, without requiring you to manually assemble an SDMX key for ordinary workflows.
+
+| Discover | Understand | Query | Retrieve |
+|:--|:--|:--|:--|
+| Search Dataflows and inspect their metadata | Explore DSD dimensions, concepts, codelists and labels | Validate filters and construct structure-aware keys | Download observations and optionally decode labels |
+
+The package also offers **observed availability**: inspect which dimension codes occur in data for a specified request, rather than assuming every code in a codelist has observations.
 
 ## Installation
 
-For now, install from a local checkout of the package project:
+Install the development version from GitHub:
 
 ```r
-# Run in the root directory of the tuiksdmx package
-install.packages("pak")                 # only if needed
-pak::local_install(".")
+install.packages("pak")  # Only if not already installed
+pak::pak("MFatihTuzen/tuiksdmx")
 ```
 
-For package development, you can alternatively use `devtools::load_all()` from the project directory. Public repository installation instructions will be added when a release location is confirmed.
-
-## Authentication
-
-The TÜİK SDMX service requires an API key. **You can provide it in three ways.**
-The recommended option for regular use is an environment variable, but
-neither `.Renviron` nor the variable name is mandatory when you pass the
-key explicitly with `api_key`.
-
-**Option A — Persistent setting (recommended).** Add the following to your
-personal `.Renviron` file (for example, open it with `usethis::edit_r_environ()`):
-
-```text
-TUIK_SDMX_API_KEY=YOUR_OWN_KEY
-```
-
-Restart R after saving the file. The package reads this variable when
-`api_key` is omitted, so normal calls remain short:
-
-```r
-cpi <- tuik_get_data("DF_TUFE_SDMX_TT01",
-                     start_period = "2026-01", end_period = "2026-01")
-```
-
-**Option B — Pass a key explicitly.** An R object can have *any name*, such
-as `api`. The code below assumes the object has already been created using a
-secure, untracked method; do not save real keys in scripts or notebooks.
-
-```r
-# api <- <your securely obtained character-string API key>
-cpi <- tuik_get_data("DF_TUFE_SDMX_TT01",
-                     start_period = "2026-01", end_period = "2026-01",
-                     api_key = api)
-```
-
-The `api_key` argument is accepted by authenticated discovery, exploration,
-profile, metadata and retrieval functions as well. An explicitly supplied
-`api_key` takes precedence over `TUIK_SDMX_API_KEY`.
-
-**Option C — Set the variable for the current R session.** When `api` already
-contains a securely supplied key, you can set:
-
-```r
-Sys.setenv(TUIK_SDMX_API_KEY = api)
-# Subsequent calls can omit api_key.
-```
-
-`Sys.setenv()` is session-scoped; it does not write to `.Renviron`.
-Regardless of the method, **never commit credentials, print token values,
-include them in bug reports, or share `.Renviron`**. Typing credentials
-in an ordinary R console or `readline()` may expose them on screen or in
-session history; prefer environment-based or secret-input workflows.
-
-## Quick start: download a period
-
-If you already know a Dataflow ID, you can retrieve observations without manually creating an SDMX key:
+Then load the package:
 
 ```r
 library(tuiksdmx)
-
-cpi <- tuik_get_data(
-  "DF_TUFE_SDMX_TT01",
-  start_period = "2026-01",
-  end_period = "2026-01"
-)
-
-head(cpi)
 ```
 
-This example requests **all series within the chosen period**, not just a single CPI indicator. During development this request returned 84 rows and 21 columns; that is an observation from a particular test, not a permanent guarantee.
+For contributors working from a local source checkout, `devtools::load_all()` is also available.
 
-### Explore first; download second
+## Quick start
+
+### 1. Configure authentication
+
+TÜİK SDMX requests require an API key. For everyday use, store it in your personal `.Renviron` file (open it with `usethis::edit_r_environ()` if needed):
+
+```text
+TUIK_SDMX_API_KEY=YOUR_OWN_API_KEY
+```
+
+Restart R after saving. The package will read this environment variable automatically. **Never commit credentials** or paste access tokens into issues, scripts or notebooks.
+
+You can also supply an API key explicitly through `api_key` or set `TUIK_SDMX_API_KEY` for the current session; see [Authentication options](#authentication).
+
+### 2. Explore a Dataflow
 
 ```r
-# Inspect the structure without downloading observations
+# Inspect dimensions and metadata without retrieving observations
 tuik_explore("DF_TUFE_SDMX_TT01")
 
-# Inspect available codes and descriptions for a series dimension
+# List codes and their descriptions for a dimension
 tuik_explore("DF_TUFE_SDMX_TT01", dimension = "DEGISIM")
 
-# Find a code by its description
+# Search descriptions in another dimension
 tuik_explore(
   "DF_TUFE_SDMX_TT01",
   dimension = "COICOP_2018",
@@ -116,11 +76,23 @@ tuik_explore(
 )
 ```
 
-`TIME_PERIOD` is the observation time dimension. It is selected with `start_period` / `end_period`; it is **not** included in the SDMX series key or the `filters` list. `YAYIM_DONEMI` is a *different* DSD series dimension and should not be confused with `TIME_PERIOD`.
+### 3. Retrieve observations
 
-### Download with a few filters
+If you know the Dataflow ID and time window, you can make a request directly:
 
-You may specify only the dimensions you care about:
+```r
+cpi <- tuik_get_data(
+  "DF_TUFE_SDMX_TT01",
+  start_period = "2026-01",
+  end_period   = "2026-01"
+)
+
+head(cpi)
+```
+
+This requests **all series for the specified observation period**. It is not limited to a single CPI indicator.
+
+### 4. Narrow the result with structured filters
 
 ```r
 chosen <- list(
@@ -130,7 +102,7 @@ chosen <- list(
   SINIFLAMA_DUZEYI = "2"
 )
 
-# Review which key dimensions were selected or left unspecified
+# Check the filters against the structure
 tuik_explore("DF_TUFE_SDMX_TT01", filters = chosen)
 
 cpi_selected <- tuik_get_data(
@@ -143,22 +115,25 @@ cpi_selected <- tuik_get_data(
 )
 ```
 
-**Important:** When `filters` does not specify **every** series key dimension, `allow_all = TRUE` permits downloading *all series for the requested time range*, then filtering in R. The number of returned rows may be small even though the download was large. This option is explicit because the TÜİK service did **not** accept the partial-key patterns tried during package development. `allow_all = TRUE` is **not a memory, response-size, or time limit**.
+> [!WARNING]
+> **Partial filters can trigger broad downloads.** With a partial series key, `allow_all = TRUE` explicitly permits retrieval of all series within the requested period, followed by **local filtering in R**. It is **not** a download-size, memory or time limit. The partial/wildcard key patterns tested during development were not accepted by the TÜİK service. For targeted server-side requests, specify a complete set of series key dimensions.
 
-For efficient server-side selection, provide a complete set of DSD key dimensions. See the [Getting started vignette](vignettes/getting-started.Rmd) for the full-key route.
+**Time dimension detail:** `TIME_PERIOD` refers to observation time and is controlled with `start_period` / `end_period`, not placed in the series-key `filters`. `YAYIM_DONEMI` is a separate DSD series dimension.
 
-## Advanced use: profile, codes, and observed availability
+## Metadata, profiles and observed availability
+
+Use a profile when inspecting or querying the same Dataflow repeatedly:
 
 ```r
 profile <- tuik_flow_profile("DF_TUFE_SDMX_TT01")
 
-# The series key dimensions, their positions, and referenced Codelists
+# Series-key dimensions and their associated codelists
 tuik_filter_dimensions(profile)
 
-# Theoretical domain: codes defined in the referenced Codelist
+# Theoretical domain defined by a codelist
 tuik_dimension_codes(profile, dimension = "DEGISIM")
 
-# Codes genuinely observed for this specific request window
+# Codes actually present in the returned observations for this request
 observed <- tuik_available_codes(
   profile,
   dimension = "COICOP_2018",
@@ -176,40 +151,58 @@ observed <- tuik_available_codes(
 observed
 ```
 
-The Codelist domain is **not** the same as observed availability. `tuik_available_codes()` calculates observed codes from returned observations; it does **not** claim to implement SDMX ContentConstraint.
+**Codelist domain ≠ observed availability.** A codelist describes permissible codes; `tuik_available_codes()` derives observed codes from retrieved observations for the specified request. It does **not** implement SDMX ContentConstraint queries.
 
-## Safe downloading and performance
+## Authentication
 
-| Situation | Recommended behavior |
-|---|---|
-| No filters, period specified | `tuik_get_data(id, start_period = ..., end_period = ...)` |
-| Partial key dimensions | Supply `allow_all = TRUE` deliberately; local filtering follows a potentially broad download |
-| Complete key dimensions | `tuik_get_data()` builds a targeted SDMX key; no `allow_all` needed |
-| No period bounds, all/partial series | `allow_unbounded = TRUE` is additionally required |
-| Same Dataflow used repeatedly | Reuse `profile <- tuik_flow_profile(id)` across calls |
+The package supports three ways to provide an API key:
 
-Requests can take less than a second or over a minute depending on server, network, authentication and query conditions. During development some identical small requests took approximately 1 second and others about 62 seconds; the exact cause of those intermittent delays was **not** confirmed. Neither `allow_all` nor a short time window guarantees a small data response.
+| Method | Example | When to use it |
+|:--|:--|:--|
+| **Environment variable (recommended)** | Set `TUIK_SDMX_API_KEY` in your personal `.Renviron` | Regular, reproducible use without keys in scripts |
+| **Explicit argument** | `tuik_get_data(id, ..., api_key = api)` | When a key is supplied securely by your application |
+| **Current-session environment** | `Sys.setenv(TUIK_SDMX_API_KEY = api)` | Temporary sessions; does not edit `.Renviron` |
 
-## Guides and vignettes
+An explicit `api_key` takes precedence over the environment variable. It is also supported by authenticated discovery, exploration, profiles and metadata operations. The object named `api` above is a placeholder for a key obtained securely; do not store it in tracked scripts or print credentials or tokens.
 
-The following guides are provided under `vignettes/` and can be built with `devtools::build_vignettes()`:
+## Download safeguards and performance
 
-- [Getting started](vignettes/getting-started.Rmd) — discovery, exploration, periods, filtering, retrieval and labels.
-- [Metadata and DSD](vignettes/metadata-and-dsd.Rmd) — Dataflows, structure definitions, dimensions, concepts and Codelists.
-- [Filtering and performance](vignettes/filtering-and-performance.Rmd) — full versus partial keys, explicit opt-ins, response size and request latency.
-- [Observed availability](vignettes/observed-availability.Rmd) — theoretical Codelist domains versus codes actually observed in selected data.
-- [Authentication and secure use](vignettes/authentication.Rmd) — `.Renviron`, `Sys.setenv()`, explicit `api_key`, token handling and safe reproducible examples.
+| Request | Behaviour |
+|:--|:--|
+| A Dataflow ID with a bounded time range and no series filters | Downloads all series within that period |
+| Complete DSD series-key filters | Builds a targeted server-side SDMX key |
+| Partial series-key filters | Requires deliberate `allow_all = TRUE`, with potentially broad retrieval and subsequent local filtering |
+| Unbounded request involving all/partial series | Additionally requires `allow_unbounded = TRUE` |
+| Repeated requests against one Dataflow | Reuse `tuik_flow_profile()` to avoid repeated structure discovery where possible |
+
+Response times can vary considerably. Selected development requests took approximately one second on some attempts and over a minute on others; the cause was not confirmed. A short period or `allow_all = TRUE` does not guarantee a small response.
+
+## Guides
+
+Five guides are included in the package source and can be built as vignettes:
+
+| Guide | What it covers |
+|:--|:--|
+| [Getting started](vignettes/getting-started.Rmd) | Discovery, exploration, periods, filtering and retrieval |
+| [Metadata and DSD](vignettes/metadata-and-dsd.Rmd) | Dataflows, dimensions, DSDs, concepts and codelists |
+| [Filtering and performance](vignettes/filtering-and-performance.Rmd) | Full vs partial keys, safeguards and request performance |
+| [Observed availability](vignettes/observed-availability.Rmd) | Codelist domains versus observed codes |
+| [Authentication and secure use](vignettes/authentication.Rmd) | API key options, tokens and reproducible credential handling |
+
+After installation, use `browseVignettes("tuiksdmx")` to view built guides in R. A dedicated pkgdown documentation website is planned.
 
 ## Scope and limitations
 
-`tuiksdmx` focuses on the authenticated SDMX REST workflow. It is not intended to reproduce broader portal discovery, downloadable spreadsheet resources or geography facilities of `tuikr`.
+`tuiksdmx` is a **focused SDMX client**. It is not intended to duplicate broader TÜİK portal resource discovery, Excel downloads or geographic functionality provided by other tooling such as `tuikr`.
 
-Server-side wildcard/partial SDMX keys, SDMX ContentConstraint querying, streaming and guaranteed hard limits on download size are **not claimed** as supported features. Functionality has been empirically checked on selected CPI and birth Dataflows; that does not prove all TÜİK Dataflows behave identically.
+The package does **not** claim support for server-side partial/wildcard SDMX keys, ContentConstraint querying, streaming, or guaranteed hard limits on downloads. Selected CPI and birth Dataflows were used during development; success with these does not establish compatibility with every Dataflow or future service configuration.
 
-## Development quality
+## Development and quality
 
-As last reported on **20 October 2026**, the local test suite recorded **534 passing expectations**. `devtools::check()` reported **0 errors, 0 warnings and 1 note** (`unable to verify current time` during future-file-timestamp verification on one Windows environment). These describe a development snapshot, not a release certification.
+The project has a `testthat` suite and an automated [R CMD check workflow](https://github.com/MFatihTuzen/tuiksdmx/actions/workflows/R-CMD-check.yaml) for Ubuntu, Windows and macOS. The latest local development validation reported **534 passing expectations**, **0 errors**, **0 warnings** and **1 note** (the local environment could not verify its current time). The subsequent three-platform CI run completed successfully; results are checks of this development snapshot, not a guarantee of live API availability.
+
+Contributions and reproducible bug reports can be shared through [GitHub Issues](https://github.com/MFatihTuzen/tuiksdmx/issues). **Do not attach credentials, tokens or private session files.**
 
 ## License
 
-MIT (see `LICENSE`).
+`tuiksdmx` is released under the **[MIT License](LICENSE.md)**. See the [full license text](LICENSE.md) for the terms and copyright notice.
