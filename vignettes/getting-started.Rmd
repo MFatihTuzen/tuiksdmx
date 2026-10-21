@@ -21,22 +21,29 @@ This tutorial follows a **single example**, the CPI Dataflow `DF_TUFE_SDMX_TT01`
 
 **Learning goals**
 
-1. Get started with an API key stored outside R scripts.
-2. Inspect a Dataflow without downloading observations.
+1. Install from GitHub and configure an API key outside R scripts.
+2. Find Dataflows by browsing or searching the catalogue, then inspect one without downloading observations.
 3. Distinguish series dimensions from `TIME_PERIOD` and SDMX attributes.
 4. Download all series for a short period, then retrieve only selected codes.
 5. Recognize when broad (`all`) downloads occur and when a full key is more efficient.
 
 # 1. Install and authenticate
 
-From a locally checked-out `tuiksdmx` package directory, install with:
+Install the development version from the public GitHub repository. You can use either installation method (you do **not** need both):
 
 ```{r install}
-# Install once from the package project directory
-pak::local_install(".")
+# Option A: pak
+install.packages("pak")  # if needed
+pak::pak("MFatihTuzen/tuiksdmx")
+
+# Option B: remotes
+install.packages("remotes")  # if needed
+remotes::install_github("MFatihTuzen/tuiksdmx")
 ```
 
-For development, `devtools::load_all()` is another option. The package is at development version `0.0.0.9000`; this tutorial does not assume CRAN availability or a public installation URL.
+If you are developing from a locally checked-out package directory, you can
+instead use `devtools::load_all()` or `pak::local_install(".")`. This is a
+GitHub development version (`0.0.0.9000`), not a CRAN installation.
 
 The API service requires credentials. The package supports **three methods**;
 `.Renviron` is recommended for routine use but is **not mandatory**.
@@ -88,22 +95,39 @@ during package checking.**
 library(tuiksdmx)
 ```
 
-# 2. Discover the Dataflow
+# 2. Discover a Dataflow
 
-If you do not know a Dataflow ID, search the catalog:
+You **do not need to know a Dataflow ID** in advance. First list the
+catalogue, or search it by topic. Both approaches obtain metadata, not
+statistical observations.
 
-```{r search}
-tuik_search_dataflows("tüketici", limit = 10)
+```{r catalogue}
+# Browse the current catalogue
+flows <- tuik_dataflows()
+head(flows)
 ```
 
-Search results help you identify a relevant Dataflow. The examples below use a known CPI identifier so that the steps remain easy to follow.
+```{r search}
+# Search by a Turkish expression (accent-insensitive search is supported)
+results <- tuik_search_dataflows("tüketici fiyat", limit = 10)
+results
+
+# Or search in English
+tuik_search_dataflows("consumer price", language = "en", limit = 10)
+```
+
+Choose a Dataflow ID from the returned catalogue/search results. The rest
+of this tutorial follows the CPI example identified during development; do
+not assume that the ID or underlying metadata will remain unchanged.
 
 ```{r profile}
 id <- "DF_TUFE_SDMX_TT01"
 profile <- tuik_flow_profile(id)
 ```
 
-Reusing `profile` avoids repeating profile construction in each later helper call. It does **not** guarantee that every live API request will be fast.
+If you already know a Dataflow ID, you can construct a profile directly.
+Reusing `profile` avoids repeating profile construction in later helper calls;
+it is **not** a guarantee that every live API request will be fast.
 
 # 3. Explore the dataset before downloading data
 
@@ -282,4 +306,4 @@ No. Partial filters are supported with explicit broad-download permission (`allo
 
 # Next steps
 
-After this tutorial, use `?tuik_get_data`, `?tuik_explore`, `?tuik_flow_profile` and `?tuik_available_codes` for the exact current interfaces. Separate in-depth guides for metadata, query performance, observed availability and authentication are planned.
+After this tutorial, use `?tuik_get_data`, `?tuik_explore`, `?tuik_flow_profile` and `?tuik_available_codes` for the exact current interfaces. The companion guides cover **metadata and DSD**, **filtering and performance**, **observed availability**, **authentication**, and **labels and decoding**. All are available as package vignettes and will be linked from the pkgdown Articles index.
