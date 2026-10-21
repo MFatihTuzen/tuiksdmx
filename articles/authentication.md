@@ -1,0 +1,166 @@
+# Authentication and secure use
+
+## Why authentication is required
+
+The TÜİK SDMX REST data service currently requires authentication.
+`tuiksdmx` accepts an API key and obtains a Bearer access token for
+requests internally. Anonymous calls to the service were observed to
+return HTTP 401 during package development. This describes observed
+service behaviour, not a permanent guarantee about the provider’s
+policy.
+
+**Do not publish API keys or access tokens.** Never include real
+credentials in R Markdown files, Git repositories, examples, issue
+reports or logs. All examples here use placeholder values or assume the
+key was obtained through a secure mechanism. This vignette does not
+contact the live service when built.
+
+## Choosing how to supply an API key
+
+Three approaches are supported. **Using `.Renviron` is recommended, not
+required.** If you supply `api_key` explicitly, the R variable holding
+it can have any name.
+
+### Option 1 — Persistent environment variable (recommended)
+
+Open your personal R environment file:
+
+``` r
+
+usethis::edit_r_environ()
+```
+
+Add a line to your personal `.Renviron` file (this is a file entry, not
+an R command):
+
+    TUIK_SDMX_API_KEY=YOUR_OWN_KEY
+
+Save the file and restart R. Do not add `.Renviron` to version control.
+When `api_key` is omitted (or `NULL`), `tuiksdmx` reads
+`Sys.getenv("TUIK_SDMX_API_KEY")` internally.
+
+``` r
+
+# No explicit api_key argument needed
+cpi <- tuiksdmx::tuik_get_data(
+  "DF_TUFE_SDMX_TT01",
+  start_period = "2026-01",
+  end_period = "2026-01"
+)
+```
+
+The exact environment variable name **`TUIK_SDMX_API_KEY`** is required
+only for this automatic lookup mechanism. It is not a required name for
+an ordinary R variable.
+
+### Option 2 — Supply the key explicitly
+
+If you have obtained your key through a secure, untracked process and
+stored it in an R object called `api`, pass it to an authenticated
+function:
+
+``` r
+
+# Assume `api` already contains your valid key as one character string.
+# Never paste a real key into source code that will be shared or committed.
+profile <- tuiksdmx::tuik_flow_profile(
+  "DF_TUFE_SDMX_TT01",
+  api_key = api
+)
+
+cpi <- tuiksdmx::tuik_get_data(
+  profile,
+  start_period = "2026-01",
+  end_period = "2026-01",
+  api_key = api
+)
+```
+
+The explicit `api_key` argument takes precedence over
+`TUIK_SDMX_API_KEY`. When using more than one authenticated function,
+provide the same key to each relevant call; passing a profile does
+**not** automatically mean all subsequent requests inherit the key that
+was used to create it.
+
+### Option 3 — Set the environment variable for this R session
+
+When you already have a key in an R object called `api`:
+
+``` r
+
+Sys.setenv(TUIK_SDMX_API_KEY = api)
+
+cpi <- tuiksdmx::tuik_get_data(
+  "DF_TUFE_SDMX_TT01",
+  start_period = "2026-01",
+  end_period = "2026-01"
+)
+```
+
+[`Sys.setenv()`](https://rdrr.io/r/base/Sys.setenv.html) changes the
+current R process environment and does not write to `.Renviron`. You
+will need to repeat it in a new session unless you have another
+persistent configuration mechanism. If you want to clear the variable
+from the current R process, use `Sys.unsetenv("TUIK_SDMX_API_KEY")` (but
+be aware that this also removes the environment value that may have been
+loaded from `.Renviron` for the remainder of the session).
+
+## What the package does with the key
+
+The internal request layer resolves an explicitly provided key or reads
+`TUIK_SDMX_API_KEY`; it requests an access token and uses Bearer
+authentication for SDMX calls. Access tokens are cached **separately by
+credential** within the R session. When the authentication response
+provides a token expiry interval, the package records it; it also has a
+one-time token-refresh path for an HTTP 401 response. Users normally do
+not need to request, copy, print or manage access tokens themselves.
+
+Because tokens and relevant metadata caches are in-memory session state,
+a new R process may need to authenticate and retrieve metadata again.
+Never assume authentication is permanent or that a successful request
+guarantees the next request will have the same latency.
+
+## Credentials in reproducible analyses
+
+A script or report should describe **which environment variable to set**
+or **which function argument to supply**, but never include the actual
+credential:
+
+``` r
+
+# Example: reproducible query without a hard-coded secret.
+# Requires the user to configure TUIK_SDMX_API_KEY beforehand.
+result <- tuiksdmx::tuik_get_data(
+  "DF_TUFE_SDMX_TT01",
+  start_period = "2026-01",
+  end_period = "2026-01"
+)
+```
+
+For a report meant to be built offline, separate any live API retrieval
+from document rendering or use appropriately documented local fixture
+data. All network-dependent chunks in this vignette have `eval = FALSE`
+by default.
+
+## Troubleshooting
+
+- **`TUIK_SDMX_API_KEY was not found`**: provide `api_key = ...`, set
+  the variable with
+  [`Sys.setenv()`](https://rdrr.io/r/base/Sys.setenv.html) in the
+  current session, or configure `.Renviron` and restart R.
+- **Invalid API key**: supply one non-empty character string; ensure it
+  has the required service access. Avoid printing it while diagnosing
+  problems.
+- **HTTP 401**: the credential may be invalid, expired or rejected by
+  the service. The package may retry once with a refreshed token;
+  persistent failures need investigation of the credential and service
+  permissions.
+- **Intermittent long requests**: timings may vary due to
+  authentication, network, retries or service conditions. In
+  development, some small requests finished in about one second and
+  others took over 60 seconds; the exact cause was not established.
+
+For dataset discovery and retrieval examples, see [Getting
+started](https://MFatihTuzen.github.io/tuiksdmx/articles/getting-started.md).
+For details on broader requests, see [Filtering and
+performance](https://MFatihTuzen.github.io/tuiksdmx/articles/filtering-and-performance.md).

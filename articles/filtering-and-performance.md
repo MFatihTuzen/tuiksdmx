@@ -1,0 +1,189 @@
+# Filtering, SDMX keys and performance
+
+## Purpose
+
+[`tuik_get_data()`](https://MFatihTuzen.github.io/tuiksdmx/reference/tuik_get_data.md)
+offers two different retrieval strategies: **a complete SDMX key**, sent
+to the server, or an **`all` request**, optionally narrowed with local R
+filtering. This distinction affects bytes transferred, memory use and
+response time. A shorter `filters` list does **not** necessarily mean a
+smaller download.
+
+All examples require access to the authenticated TÜİK SDMX service and
+are deliberately not executed when the vignette is built. They assume a
+key has been configured in the `TUIK_SDMX_API_KEY` environment variable,
+or use an explicitly supplied `api_key = api`. `.Renviron` is
+recommended, not required.
+
+``` r
+
+library(tuiksdmx)
+profile <- tuik_flow_profile("DF_TUFE_SDMX_TT01")
+```
+
+## 1. The easiest request: a bounded period
+
+``` r
+
+cpi_month <- tuik_get_data(
+  "DF_TUFE_SDMX_TT01",
+  start_period = "2026-01",
+  end_period = "2026-01"
+)
+nrow(cpi_month)
+```
+
+With `filters = NULL` (the default), the package requests **all series**
+for the selected period. Even one month can be large for some Dataflows.
+A time range is not a row or byte limit. Either `start_period` or
+`end_period` suffices to avoid the no-period safeguard in
+[`tuik_get_data()`](https://MFatihTuzen.github.io/tuiksdmx/reference/tuik_get_data.md),
+but **both** are preferable when the goal is a known small window.
+
+`TIME_PERIOD` is selected through the time arguments and is **not** part
+of `filters`. In CPI, the separate key dimension `YAYIM_DONEMI` has a
+different meaning.
+
+## 2. Partial filters: download `all`, then select locally
+
+``` r
+
+chosen <- list(FREQ = "M", DEGISIM = "1")
+
+tuik_explore(profile, filters = chosen)
+
+tuik_missing_filters(profile, chosen)
+
+cpi_subset <- tuik_get_data(
+  profile,
+  filters = chosen,
+  start_period = "2026-01",
+  end_period = "2026-01",
+  allow_all = TRUE
+)
+```
+
+**Important:** `allow_all = TRUE` is explicit permission for a
+potentially broad `data/{Dataflow}/all` download. The package filters
+returned observations **after the response arrives in R**. It does not
+limit server work, bytes transferred, memory consumption or total
+response time. Without this permission, incomplete filters are rejected.
+The older `filter_mode = "local"` option is supported for compatibility;
+prefer `allow_all = TRUE` in new examples.
+
+Do not describe this as server-side wildcard or partial-key filtering:
+the current implementation does not rely on such behavior.
+
+## 3. Complete filters: use a server-side SDMX key
+
+Start with the structural template, then fill each required dimension
+using appropriate codes from the Dataflow’s Codelists:
+
+``` r
+
+all_dimensions <- tuik_filter_dimensions(profile)
+all_dimensions
+
+filters <- list(
+  REF_AREA = "TR",
+  FREQ = "M",
+  SINIFLAMA_DUZEYI = "2",
+  DEGISIM = "1",
+  OZEL_KAPSAM_TUFE = "_Z",
+  BASE_PER = "2025",
+  YAYIM_DONEMI = "2026_01",
+  COICOP_1999 = "_Z",
+  COICOP_2018 = "01",
+  INDICATOR = "F_TFE"
+)
+
+# Check that every key dimension is present
+tuik_missing_filters(profile, filters)
+
+# Check defined code membership against referenced Codelists
+tuik_validate_filters(profile, filters)
+
+# Inspect the constructed key if needed (normally not required)
+tuik_build_key(profile, filters)
+
+cpi_food <- tuik_get_data(
+  profile,
+  filters = filters,
+  start_period = "2026-01",
+  end_period = "2026-01"
+)
+```
+
+The key order comes from the DSD, **not** from the order of entries in
+the user’s named list. The shown identifiers/codes reflect a structure
+tested during development; recheck live metadata before reusing them for
+different versions or periods. A structurally complete, valid key can
+still return no observations.
+
+## 4. Guardrails: `allow_all` versus `allow_unbounded`
+
+These options protect against **different** situations:
+
+| Setting | What it authorizes | What it does *not* guarantee |
+|:---|:---|:---|
+| `allow_all = TRUE` | Broad `all` download when using partial filters | No byte, row, memory or time cap |
+| `allow_unbounded = TRUE` | `all` download with **neither** period bound supplied | No safe size cap and no guarantee of response time |
+
+``` r
+
+# Potentially VERY large: intentionally avoid in routine analysis.
+whole_flow <- tuik_get_data(
+  profile,
+  allow_unbounded = TRUE
+)
+```
+
+With `filters = NULL`, a bounded `all` request does **not** require
+`allow_all = TRUE`. With incomplete non-NULL filters, the package
+requires `allow_all = TRUE` (or the legacy local mode). If neither
+period bound exists, it additionally requires `allow_unbounded = TRUE`.
+A complete key uses the targeted server-side path; do not infer that its
+lack of a time bound is necessarily inexpensive.
+
+## 5. Decoding labels without discarding SDMX codes
+
+``` r
+
+cpi_labeled <- tuik_get_data(
+  profile,
+  start_period = "2026-01",
+  end_period = "2026-01",
+  labels = "tr",
+  label_dimensions = c("COICOP_2018", "DEGISIM")
+)
+```
+
+`labels` accepts `"none"` (default), `"tr"`, `"en"` or `"both"`. Added
+label columns complement the original code columns. Label lookups may
+involve metadata requests; labels describe Codelist definitions, not
+proof of availability.
+
+## 6. Why the same request can have different durations
+
+In development tests, the same small CPI period sometimes completed in
+about one second and at other times took roughly one minute. Subsequent
+direct HTTP and CSV parsing tests completed quickly. **The intermittent
+delay was not conclusively attributed to the server, network,
+authentication or retry mechanism.** The package therefore makes no
+fixed latency guarantee.
+
+Practical guidance:
+
+1.  Prefer short, explicitly bounded date ranges.
+2.  Use **complete filters** when narrowing server-side transfer
+    matters.
+3.  Avoid casually authorizing `all` for large Dataflows.
+4.  Reuse a profile object when working repeatedly with one Dataflow;
+    this avoids repeated profile construction but is not a cache for
+    observations.
+5.  For comparisons, record the selected profile, filters, time window
+    and actual elapsed time.
+
+The library does **not** currently implement a hard response-size limit.
+If the desired subset cannot be represented by a complete key, partial
+filtering can be convenient but potentially costly.
