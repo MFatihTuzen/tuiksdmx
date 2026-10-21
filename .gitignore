@@ -30,3 +30,6 @@ testthat.Rout*
 # Local check logs
 *.Rout
 *.Rout.fail
+
+# pkgdown docs
+/docs/

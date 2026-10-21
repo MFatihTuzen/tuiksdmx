@@ -1,0 +1,72 @@
+url: https://MFatihTuzen.github.io/tuiksdmx/
+
+template:
+  bootstrap: 5
+  light-switch: true
+
+home:
+  title: tuiksdmx — Authenticated access to TÜİK SDMX data
+
+navbar:
+  structure:
+    left: [intro, reference, articles, news]
+    right: [search, github, lightswitch]
+  components:
+    intro:
+      text: Get started
+      href: articles/getting-started.html
+    github:
+      icon: fab fa-github
+      href: https://github.com/MFatihTuzen/tuiksdmx
+      aria-label: GitHub
+
+articles:
+  - title: Getting started
+    contents:
+      - getting-started
+      - authentication
+  - title: Data discovery and metadata
+    contents:
+      - metadata-and-dsd
+      - observed-availability
+  - title: Querying and interpreting data
+    contents:
+      - filtering-and-performance
+      - labels-and-decoding
+
+reference:
+  - title: Find statistical datasets
+    desc: Discover and search SDMX Dataflows.
+    contents:
+      - tuik_dataflows
+      - tuik_search_dataflows
+      - tuik_get_dataflow
+      - tuik_explore
+  - title: Inspect metadata and dimensions
+    desc: Explore Data Structures, code lists, concepts and dimensions.
+    contents:
+      - tuik_flow_profile
+      - tuik_get_dsd
+      - tuik_dimensions
+      - tuik_key_dimensions
+      - tuik_attributes
+      - tuik_measures
+      - tuik_get_codelist
+      - tuik_dimension_codes
+      - tuik_get_concept_scheme
+      - tuik_concepts
+      - tuik_search_concepts
+  - title: Build and validate queries
+    desc: Use structured dimension filters and validated SDMX keys.
+    contents:
+      - tuik_filter_template
+      - tuik_filter_dimensions
+      - tuik_missing_filters
+      - tuik_validate_filters
+      - tuik_build_key
+  - title: Retrieve and interpret observations
+    desc: Download observations, interpret labels and inspect observed availability.
+    contents:
+      - tuik_get_data
+      - tuik_decode_data
+      - tuik_available_codes

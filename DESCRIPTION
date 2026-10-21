@@ -12,6 +12,9 @@ Description: Provides an authenticated, metadata-driven R client for the
     data retrieval, and observation-based availability exploration.
     Authentication supports an environment variable or an explicitly
     supplied API key argument.
+URL: https://github.com/MFatihTuzen/tuiksdmx,
+ https://MFatihTuzen.github.io/tuiksdmx/
+BugReports: https://github.com/MFatihTuzen/tuiksdmx/issues
 License: MIT + file LICENSE
 Depends:
     R (>= 4.1.0)
