@@ -7,6 +7,7 @@ Discover dataflows · Understand structures · Build validated queries ·
 Retrieve statistical data
 
 [![R-CMD-check](https://github.com/MFatihTuzen/tuiksdmx/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/MFatihTuzen/tuiksdmx/actions/workflows/R-CMD-check.yaml)
+[![Documentation](https://img.shields.io/badge/docs-pkgdown-AB2328.svg)](https://mfatihtuzen.github.io/tuiksdmx/)
 [![License:
 MIT](https://img.shields.io/badge/license-MIT-AB2328.svg)](https://MFatihTuzen.github.io/tuiksdmx/LICENSE.md)
 [![R ≥
@@ -16,12 +17,13 @@ Development](https://img.shields.io/badge/status-development-AB2328.svg)](https:
 
 [Get started](#quick-start) · [Installation](#installation) ·
 [Authentication](#authentication) · [Guides](#guides) ·
+[Documentation](https://mfatihtuzen.github.io/tuiksdmx/) ·
 [License](#license)
 
-> \[!IMPORTANT\] **Development release (`0.0.0.9000`).** `tuiksdmx` is
-> currently distributed through GitHub, not CRAN. TÜİK SDMX endpoints
-> require authentication. Dataflow structures and service behaviour may
-> change; examples below use a Dataflow verified during development.
+> **Development release (`0.0.0.9000`).** `tuiksdmx` is currently
+> distributed through GitHub, not CRAN. TÜİK SDMX endpoints require
+> authentication. Dataflow structures and service behaviour may change;
+> examples below use a Dataflow verified during development.
 
 ## Why tuiksdmx?
 
@@ -174,7 +176,7 @@ cpi_selected <- tuik_get_data(
 )
 ```
 
-> \[!WARNING\] **Partial filters can trigger broad downloads.** With a
+> **Caution — partial filters can trigger broad downloads.** With a
 > partial series key, `allow_all = TRUE` explicitly permits retrieval of
 > all series within the requested period, followed by **local filtering
 > in R**. It is **not** a download-size, memory or time limit. The
@@ -257,17 +259,18 @@ not guarantee a small response.
 
 ## Guides
 
-The README is a starting point, not a complete function reference. Five
-more detailed guides are already included in the package source and can
-be built as vignettes:
+The README is a starting point, not a complete function reference. Six
+guides are included in the package and available on the [documentation
+website](https://mfatihtuzen.github.io/tuiksdmx/articles/):
 
 | Guide | What it covers |
 |:---|:---|
-| [Getting started](https://MFatihTuzen.github.io/tuiksdmx/vignettes/getting-started.Rmd) | Discovery, exploration, periods, filtering and retrieval |
-| [Metadata and DSD](https://MFatihTuzen.github.io/tuiksdmx/vignettes/metadata-and-dsd.Rmd) | Dataflows, dimensions, DSDs, concepts and codelists |
-| [Filtering and performance](https://MFatihTuzen.github.io/tuiksdmx/vignettes/filtering-and-performance.Rmd) | Full vs partial keys, safeguards and request performance |
-| [Observed availability](https://MFatihTuzen.github.io/tuiksdmx/vignettes/observed-availability.Rmd) | Codelist domains versus observed codes |
-| [Authentication and secure use](https://MFatihTuzen.github.io/tuiksdmx/vignettes/authentication.Rmd) | API key options, tokens and reproducible credential handling |
+| [Getting started](https://mfatihtuzen.github.io/tuiksdmx/articles/getting-started.html) | Discovery, exploration, periods, filtering and retrieval |
+| [Metadata and DSD](https://mfatihtuzen.github.io/tuiksdmx/articles/metadata-and-dsd.html) | Dataflows, dimensions, DSDs, concepts and codelists |
+| [Filtering and performance](https://mfatihtuzen.github.io/tuiksdmx/articles/filtering-and-performance.html) | Full vs partial keys, safeguards and request performance |
+| [Observed availability](https://mfatihtuzen.github.io/tuiksdmx/articles/observed-availability.html) | Codelist domains versus observed codes |
+| [Authentication and secure use](https://mfatihtuzen.github.io/tuiksdmx/articles/authentication.html) | API key options, tokens and reproducible credential handling |
+| [Labels and decoding](https://mfatihtuzen.github.io/tuiksdmx/articles/labels-and-decoding.html) | Turkish/English labels, dimension selection and decoding data already retrieved |
 
 After installation, use `browseVignettes("tuiksdmx")` to view built
 guides in R. For individual function arguments and examples, open R help
@@ -280,15 +283,14 @@ and
 **Labels and readable outputs:** `tuik_get_data(..., labels = "tr")` can
 add Turkish code descriptions; `labels = "en"` or `"both"` are also
 supported. The `label_dimensions` argument controls which dimensions are
-decoded. A longer, worked example of label handling and analysis-ready
-outputs is planned for the documentation website; see the current
-[Metadata and
-DSD](https://MFatihTuzen.github.io/tuiksdmx/vignettes/metadata-and-dsd.Rmd)
-guide for structural metadata.
+decoded. See the [Labels and decoding
+guide](https://mfatihtuzen.github.io/tuiksdmx/articles/labels-and-decoding.html)
+for a worked example.
 
-A dedicated **pkgdown documentation website** is planned to bring the
-reference pages, existing vignettes and more comprehensive examples
-together.
+The [pkgdown documentation
+website](https://mfatihtuzen.github.io/tuiksdmx/) brings together the
+[function reference](https://mfatihtuzen.github.io/tuiksdmx/reference/),
+all six guides and the changelog.
 
 ## Scope and limitations
 
@@ -319,7 +321,5 @@ credentials, tokens or private session files.**
 
 ## License
 
-`tuiksdmx` is released under the **[MIT
-License](https://MFatihTuzen.github.io/tuiksdmx/LICENSE.md)**. See the
-[full license text](https://MFatihTuzen.github.io/tuiksdmx/LICENSE.md)
-for the terms and copyright notice.
+`tuiksdmx` is distributed under the **[MIT
+License](https://MFatihTuzen.github.io/tuiksdmx/LICENSE.md)**.

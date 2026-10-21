@@ -61,11 +61,11 @@
 </h1></div>
 <p><strong>An authenticated, metadata-driven R client for the TÜİK (Turkish Statistical Institute) SDMX REST API.</strong></p>
 <p>Discover dataflows · Understand structures · Build validated queries · Retrieve statistical data</p>
-<p><a href="https://github.com/MFatihTuzen/tuiksdmx/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/MFatihTuzen/tuiksdmx/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a> <a href="LICENSE.html"><img src="https://img.shields.io/badge/license-MIT-AB2328.svg" alt="License: MIT"></a> <a href="DESCRIPTION"><img src="https://img.shields.io/badge/R-%E2%89%A5%204.1.0-555555.svg" alt="R ≥ 4.1.0"></a> <a href="NEWS.html"><img src="https://img.shields.io/badge/status-development-AB2328.svg" alt="Status: Development"></a></p>
-<p><a href="#quick-start">Get started</a> · <a href="#installation">Installation</a> · <a href="#authentication">Authentication</a> · <a href="#guides">Guides</a> · <a href="#license">License</a></p>
+<p><a href="https://github.com/MFatihTuzen/tuiksdmx/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/MFatihTuzen/tuiksdmx/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a> <a href="https://mfatihtuzen.github.io/tuiksdmx/" class="external-link"><img src="https://img.shields.io/badge/docs-pkgdown-AB2328.svg" alt="Documentation"></a> <a href="LICENSE.html"><img src="https://img.shields.io/badge/license-MIT-AB2328.svg" alt="License: MIT"></a> <a href="DESCRIPTION"><img src="https://img.shields.io/badge/R-%E2%89%A5%204.1.0-555555.svg" alt="R ≥ 4.1.0"></a> <a href="NEWS.html"><img src="https://img.shields.io/badge/status-development-AB2328.svg" alt="Status: Development"></a></p>
+<p><a href="#quick-start">Get started</a> · <a href="#installation">Installation</a> · <a href="#authentication">Authentication</a> · <a href="#guides">Guides</a> · <a href="https://mfatihtuzen.github.io/tuiksdmx/" class="external-link">Documentation</a> · <a href="#license">License</a></p>
 </div>
 <blockquote>
-<p>[!IMPORTANT] <strong>Development release (<code>0.0.0.9000</code>).</strong> <code>tuiksdmx</code> is currently distributed through GitHub, not CRAN. TÜİK SDMX endpoints require authentication. Dataflow structures and service behaviour may change; examples below use a Dataflow verified during development.</p>
+<p><strong>Development release (<code>0.0.0.9000</code>).</strong> <code>tuiksdmx</code> is currently distributed through GitHub, not CRAN. TÜİK SDMX endpoints require authentication. Dataflow structures and service behaviour may change; examples below use a Dataflow verified during development.</p>
 </blockquote>
 <div class="section level2">
 <h2 id="why-tuiksdmx">Why tuiksdmx?<a class="anchor" aria-label="anchor" href="#why-tuiksdmx"></a>
@@ -192,7 +192,7 @@
 <span>  labels <span class="op">=</span> <span class="st">"tr"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <blockquote>
-<p>[!WARNING] <strong>Partial filters can trigger broad downloads.</strong> With a partial series key, <code>allow_all = TRUE</code> explicitly permits retrieval of all series within the requested period, followed by <strong>local filtering in R</strong>. It is <strong>not</strong> a download-size, memory or time limit. The partial/wildcard key patterns tested during development were not accepted by the TÜİK service. For targeted server-side requests, specify a complete set of series key dimensions.</p>
+<p><strong>Caution — partial filters can trigger broad downloads.</strong> With a partial series key, <code>allow_all = TRUE</code> explicitly permits retrieval of all series within the requested period, followed by <strong>local filtering in R</strong>. It is <strong>not</strong> a download-size, memory or time limit. The partial/wildcard key patterns tested during development were not accepted by the TÜİK service. For targeted server-side requests, specify a complete set of series key dimensions.</p>
 </blockquote>
 <p><strong>Time dimension detail:</strong> <code>TIME_PERIOD</code> refers to observation time and is controlled with <code>start_period</code> / <code>end_period</code>, not placed in the series-key <code>filters</code>. <code>YAYIM_DONEMI</code> is a separate DSD series dimension.</p>
 </div>
@@ -306,7 +306,7 @@
 <div class="section level2">
 <h2 id="guides">Guides<a class="anchor" aria-label="anchor" href="#guides"></a>
 </h2>
-<p>The README is a starting point, not a complete function reference. Five more detailed guides are already included in the package source and can be built as vignettes:</p>
+<p>The README is a starting point, not a complete function reference. Six guides are included in the package and available on the <a href="https://mfatihtuzen.github.io/tuiksdmx/articles/" class="external-link">documentation website</a>:</p>
 <table class="table">
 <colgroup>
 <col width="50%">
@@ -318,30 +318,34 @@
 </tr></thead>
 <tbody>
 <tr>
-<td align="left"><a href="vignettes/getting-started.Rmd">Getting started</a></td>
+<td align="left"><a href="https://mfatihtuzen.github.io/tuiksdmx/articles/getting-started.html" class="external-link">Getting started</a></td>
 <td align="left">Discovery, exploration, periods, filtering and retrieval</td>
 </tr>
 <tr>
-<td align="left"><a href="vignettes/metadata-and-dsd.Rmd">Metadata and DSD</a></td>
+<td align="left"><a href="https://mfatihtuzen.github.io/tuiksdmx/articles/metadata-and-dsd.html" class="external-link">Metadata and DSD</a></td>
 <td align="left">Dataflows, dimensions, DSDs, concepts and codelists</td>
 </tr>
 <tr>
-<td align="left"><a href="vignettes/filtering-and-performance.Rmd">Filtering and performance</a></td>
+<td align="left"><a href="https://mfatihtuzen.github.io/tuiksdmx/articles/filtering-and-performance.html" class="external-link">Filtering and performance</a></td>
 <td align="left">Full vs partial keys, safeguards and request performance</td>
 </tr>
 <tr>
-<td align="left"><a href="vignettes/observed-availability.Rmd">Observed availability</a></td>
+<td align="left"><a href="https://mfatihtuzen.github.io/tuiksdmx/articles/observed-availability.html" class="external-link">Observed availability</a></td>
 <td align="left">Codelist domains versus observed codes</td>
 </tr>
 <tr>
-<td align="left"><a href="vignettes/authentication.Rmd">Authentication and secure use</a></td>
+<td align="left"><a href="https://mfatihtuzen.github.io/tuiksdmx/articles/authentication.html" class="external-link">Authentication and secure use</a></td>
 <td align="left">API key options, tokens and reproducible credential handling</td>
+</tr>
+<tr>
+<td align="left"><a href="https://mfatihtuzen.github.io/tuiksdmx/articles/labels-and-decoding.html" class="external-link">Labels and decoding</a></td>
+<td align="left">Turkish/English labels, dimension selection and decoding data already retrieved</td>
 </tr>
 </tbody>
 </table>
 <p>After installation, use <code>browseVignettes("tuiksdmx")</code> to view built guides in R. For individual function arguments and examples, open R help pages such as <code><a href="reference/tuik_get_data.html">?tuik_get_data</a></code>, <code><a href="reference/tuik_search_dataflows.html">?tuik_search_dataflows</a></code>, and <code><a href="reference/tuik_decode_data.html">?tuik_decode_data</a></code>.</p>
-<p><strong>Labels and readable outputs:</strong> <code>tuik_get_data(..., labels = "tr")</code> can add Turkish code descriptions; <code>labels = "en"</code> or <code>"both"</code> are also supported. The <code>label_dimensions</code> argument controls which dimensions are decoded. A longer, worked example of label handling and analysis-ready outputs is planned for the documentation website; see the current <a href="vignettes/metadata-and-dsd.Rmd">Metadata and DSD</a> guide for structural metadata.</p>
-<p>A dedicated <strong>pkgdown documentation website</strong> is planned to bring the reference pages, existing vignettes and more comprehensive examples together.</p>
+<p><strong>Labels and readable outputs:</strong> <code>tuik_get_data(..., labels = "tr")</code> can add Turkish code descriptions; <code>labels = "en"</code> or <code>"both"</code> are also supported. The <code>label_dimensions</code> argument controls which dimensions are decoded. See the <a href="https://mfatihtuzen.github.io/tuiksdmx/articles/labels-and-decoding.html" class="external-link">Labels and decoding guide</a> for a worked example.</p>
+<p>The <a href="https://mfatihtuzen.github.io/tuiksdmx/" class="external-link">pkgdown documentation website</a> brings together the <a href="https://mfatihtuzen.github.io/tuiksdmx/reference/" class="external-link">function reference</a>, all six guides and the changelog.</p>
 </div>
 <div class="section level2">
 <h2 id="scope-and-limitations">Scope and limitations<a class="anchor" aria-label="anchor" href="#scope-and-limitations"></a>
@@ -358,7 +362,7 @@
 <div class="section level2">
 <h2 id="license">License<a class="anchor" aria-label="anchor" href="#license"></a>
 </h2>
-<p><code>tuiksdmx</code> is released under the <strong><a href="LICENSE.html">MIT License</a></strong>. See the <a href="LICENSE.html">full license text</a> for the terms and copyright notice.</p>
+<p><code>tuiksdmx</code> is distributed under the <strong><a href="LICENSE.html">MIT License</a></strong>.</p>
 </div>
 
   </main><aside class="col-md-3"><div class="links">
