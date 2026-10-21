@@ -30,14 +30,21 @@ The package also offers **observed availability**: inspect which dimension codes
 
 ## Installation
 
-Install the development version from GitHub:
+Install the development version from GitHub using **pak** (recommended):
 
 ```r
-install.packages("pak")  # Only if not already installed
+install.packages("pak")  # Run once, if not already installed
 pak::pak("MFatihTuzen/tuiksdmx")
 ```
 
-Then load the package:
+Alternatively, use **remotes**, a familiar option for installing R packages from GitHub:
+
+```r
+install.packages("remotes")  # Run once, if not already installed
+remotes::install_github("MFatihTuzen/tuiksdmx")
+```
+
+Both methods install the GitHub development version; the package is not yet on CRAN. Then load it:
 
 ```r
 library(tuiksdmx)
@@ -59,7 +66,27 @@ Restart R after saving. The package will read this environment variable automati
 
 You can also supply an API key explicitly through `api_key` or set `TUIK_SDMX_API_KEY` for the current session; see [Authentication options](#authentication).
 
-### 2. Explore a Dataflow
+### 2. Discover Dataflows
+
+You do **not** need to know a Dataflow ID in advance. Browse the authenticated catalogue or search by subject:
+
+```r
+# Retrieve the catalogue of Dataflows
+flows <- tuik_dataflows()
+
+# View identifiers and their Turkish / English names
+head(flows[c("dataflow_id", "name_tr", "name_en")], 10)
+
+# Search the catalogue in Turkish (accent-insensitive matching)
+tuik_search_dataflows("tüketici fiyat", limit = 10)
+
+# Or search by English terminology
+tuik_search_dataflows("consumer price", language = "en", limit = 10)
+```
+
+Choose a `dataflow_id` from the results. The remainder of this example uses the CPI Dataflow `DF_TUFE_SDMX_TT01`, which was inspected during package development; live catalogues can change.
+
+### 3. Explore a Dataflow
 
 ```r
 # Inspect dimensions and metadata without retrieving observations
@@ -76,7 +103,7 @@ tuik_explore(
 )
 ```
 
-### 3. Retrieve observations
+### 4. Retrieve observations
 
 If you know the Dataflow ID and time window, you can make a request directly:
 
@@ -92,7 +119,7 @@ head(cpi)
 
 This requests **all series for the specified observation period**. It is not limited to a single CPI indicator.
 
-### 4. Narrow the result with structured filters
+### 5. Narrow the result with structured filters
 
 ```r
 chosen <- list(
@@ -179,7 +206,7 @@ Response times can vary considerably. Selected development requests took approxi
 
 ## Guides
 
-Five guides are included in the package source and can be built as vignettes:
+The README is a starting point, not a complete function reference. Five more detailed guides are already included in the package source and can be built as vignettes:
 
 | Guide | What it covers |
 |:--|:--|
@@ -189,7 +216,11 @@ Five guides are included in the package source and can be built as vignettes:
 | [Observed availability](vignettes/observed-availability.Rmd) | Codelist domains versus observed codes |
 | [Authentication and secure use](vignettes/authentication.Rmd) | API key options, tokens and reproducible credential handling |
 
-After installation, use `browseVignettes("tuiksdmx")` to view built guides in R. A dedicated pkgdown documentation website is planned.
+After installation, use `browseVignettes("tuiksdmx")` to view built guides in R. For individual function arguments and examples, open R help pages such as `?tuik_get_data`, `?tuik_search_dataflows`, and `?tuik_decode_data`.
+
+**Labels and readable outputs:** `tuik_get_data(..., labels = "tr")` can add Turkish code descriptions; `labels = "en"` or `"both"` are also supported. The `label_dimensions` argument controls which dimensions are decoded. A longer, worked example of label handling and analysis-ready outputs is planned for the documentation website; see the current [Metadata and DSD](vignettes/metadata-and-dsd.Rmd) guide for structural metadata.
+
+A dedicated **pkgdown documentation website** is planned to bring the reference pages, existing vignettes and more comprehensive examples together.
 
 ## Scope and limitations
 
