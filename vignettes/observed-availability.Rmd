@@ -1,0 +1,106 @@
+---
+title: "Defined codes versus observed availability"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Defined codes versus observed availability}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(eval = FALSE, collapse = TRUE, comment = "#>")
+```
+
+# The question: which codes actually appear?
+
+A DSD references Codelists that define **possible** values for coded dimensions. Those lists cannot tell us which values have observations in a particular Dataflow, period or selection. `tuik_available_codes()` answers a narrower, empirical question: **which codes occur in the observations returned for this query?**
+
+This implementation inspects returned SDMX-CSV observations; it does **not** retrieve or represent SDMX `ContentConstraint` metadata. Counts reflect rows in that response, not necessarily unique series or a complete inventory of all possible combinations.
+
+All requests in this vignette require the authenticated service; examples are not run during package checks. Credentials can be supplied through `TUIK_SDMX_API_KEY` (including via `.Renviron` or `Sys.setenv()`) or a per-call `api_key = api` argument.
+
+```{r profile}
+library(tuiksdmx)
+profile <- tuik_flow_profile("DF_TUFE_SDMX_TT01")
+```
+
+# 1. Start with the defined domain
+
+```{r definitions}
+# All listed values are structurally defined, not necessarily observed.
+defined <- tuik_dimension_codes(profile, dimension = "COICOP_2018")
+defined
+```
+
+Codelist codes and descriptions help formulate a valid filter. Existence in the Codelist alone is **not evidence** that data for that code exists during January 2026.
+
+# 2. Ask which codes occur in a bounded period
+
+```{r observed}
+# No filters: explicit opt-in because this inspects an `all` response.
+observed <- tuik_available_codes(
+  profile,
+  dimension = "COICOP_2018",
+  start_period = "2026-01",
+  end_period = "2026-01",
+  allow_all = TRUE
+)
+observed
+```
+
+Both `start_period` and `end_period` are required for this function. With incomplete or absent filters, `allow_all = TRUE` is mandatory: the service's `all` response is downloaded before the codes are counted. This permission does **not** limit download size or memory use. Restrict periods conservatively.
+
+The output has a `code` column, an `n_rows` count, and (when requested and available) Turkish/English Codelist labels. An empty output can mean no observations were returned for the selection; interpret it relative to the chosen period and filters.
+
+# 3. Add partial filters
+
+```{r partial}
+selected <- tuik_available_codes(
+  profile,
+  dimension = "COICOP_2018",
+  start_period = "2026-01",
+  end_period = "2026-01",
+  filters = list(REF_AREA = "TR", FREQ = "M"),
+  allow_all = TRUE,
+  query_mode = "auto"
+)
+selected
+```
+
+For partial selections, `query_mode = "auto"` does not manufacture an SDMX wildcard key. It requests `all` (only after explicit permission) and reapplies the selections locally. The `n_rows` counts thus describe observations matching the selection in the returned data.
+
+# 4. A complete key can be more selective
+
+When every required key dimension has a value, `query_mode = "auto"` uses the constructed **server-side key**. A complete filter may constrain the observed dimension to a single code, so choose the question and filters accordingly.
+
+```{r full-key}
+filters <- list(
+  REF_AREA = "TR", FREQ = "M", SINIFLAMA_DUZEYI = "2",
+  DEGISIM = "1", OZEL_KAPSAM_TUFE = "_Z", BASE_PER = "2025",
+  YAYIM_DONEMI = "2026_01", COICOP_1999 = "_Z",
+  COICOP_2018 = "01", INDICATOR = "F_TFE"
+)
+
+# Check the referenced Codelists before calling the service.
+tuik_validate_filters(profile, filters)
+
+available_in_key <- tuik_available_codes(
+  profile,
+  dimension = "COICOP_2018",
+  start_period = "2026-01",
+  end_period = "2026-01",
+  filters = filters,
+  query_mode = "auto"
+)
+available_in_key
+```
+
+`query_mode = "all"` forces an `all` request **even with a complete filter** and also requires `allow_all = TRUE`. This can be substantially more expensive; it is not the preferred strategy for a fully specified key.
+
+# 5. Correct interpretation
+
+- **Defined domain:** `tuik_dimension_codes()` returns codes from the DSD-referenced Codelist, whether or not any observations exist in the current window.
+- **Observed codes:** `tuik_available_codes()` reports values found in returned observation rows for the specified time window and filters.
+- **Content constraints:** a separate SDMX metadata concept; this package does not claim to derive them from `tuik_available_codes()`.
+
+Avoid treating `n_rows` as an official count of statistical series, or treating a missing observed code as evidence that the code is invalid. A code may exist in the Codelist yet have no observations for a particular period or set of filters. See *Filtering, SDMX keys and performance* for retrieval-cost considerations.

@@ -1,0 +1,32 @@
+# RStudio
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+
+# R package check and build files
+.Rcheck/
+*.Rcheck/
+*.tar.gz
+
+# Temporary files
+.Renviron
+.Renviron.*
+*.Rproj.user
+.DS_Store
+Thumbs.db
+
+# Local test outputs
+testthat.Rout*
+/doc/
+/Meta/
+
+# Additional environment and secret files
+.env
+.env.*
+*.pem
+*.key
+
+# Local check logs
+*.Rout
+*.Rout.fail

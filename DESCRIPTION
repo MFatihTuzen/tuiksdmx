@@ -1,0 +1,36 @@
+Package: tuiksdmx
+Title: Access the Turkish Statistical Institute SDMX REST API
+Version: 0.0.0.9000
+Authors@R:
+    person("Muhammed Fatih", "Tuzen",
+           email = "mfatihtuzen@gmail.com",
+           role = c("aut", "cre"))
+Description: Provides an authenticated, metadata-driven R client for the
+    Turkish Statistical Institute (TURKSTAT) SDMX REST API. Supports
+    dataflow discovery, data structure definitions, concepts, codelists,
+    metadata-based filter validation, SDMX query construction, statistical
+    data retrieval, and observation-based availability exploration.
+    Authentication supports an environment variable or an explicitly
+    supplied API key argument.
+License: MIT + file LICENSE
+Depends:
+    R (>= 4.1.0)
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+Imports:
+    httr2,
+    xml2,
+    dplyr,
+    purrr,
+    tibble,
+    readr,
+    rlang,
+    digest
+Suggests:
+    testthat (>= 3.0.0),
+    withr,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
+Config/testthat/edition: 3
+Config/roxygen2/version: 8.1.1
