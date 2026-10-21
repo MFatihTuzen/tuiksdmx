@@ -7,15 +7,15 @@
 Discover dataflows · Understand structures · Build validated queries · Retrieve statistical data
 
 [![R-CMD-check](https://github.com/MFatihTuzen/tuiksdmx/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/MFatihTuzen/tuiksdmx/actions/workflows/R-CMD-check.yaml)
+[![Documentation](https://img.shields.io/badge/docs-pkgdown-AB2328.svg)](https://mfatihtuzen.github.io/tuiksdmx/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-AB2328.svg)](LICENSE.md)
 [![R ≥ 4.1.0](https://img.shields.io/badge/R-%E2%89%A5%204.1.0-555555.svg)](DESCRIPTION)
 [![Status: Development](https://img.shields.io/badge/status-development-AB2328.svg)](NEWS.md)
 
-[Get started](#quick-start) · [Installation](#installation) · [Authentication](#authentication) · [Guides](#guides) · [License](#license)
+[Get started](#quick-start) · [Installation](#installation) · [Authentication](#authentication) · [Guides](#guides) · [Documentation](https://mfatihtuzen.github.io/tuiksdmx/) · [License](#license)
 
 </div>
 
-> [!IMPORTANT]
 > **Development release (`0.0.0.9000`).** `tuiksdmx` is currently distributed through GitHub, not CRAN. TÜİK SDMX endpoints require authentication. Dataflow structures and service behaviour may change; examples below use a Dataflow verified during development.
 
 ## Why tuiksdmx?
@@ -142,8 +142,7 @@ cpi_selected <- tuik_get_data(
 )
 ```
 
-> [!WARNING]
-> **Partial filters can trigger broad downloads.** With a partial series key, `allow_all = TRUE` explicitly permits retrieval of all series within the requested period, followed by **local filtering in R**. It is **not** a download-size, memory or time limit. The partial/wildcard key patterns tested during development were not accepted by the TÜİK service. For targeted server-side requests, specify a complete set of series key dimensions.
+> **Caution — partial filters can trigger broad downloads.** With a partial series key, `allow_all = TRUE` explicitly permits retrieval of all series within the requested period, followed by **local filtering in R**. It is **not** a download-size, memory or time limit. The partial/wildcard key patterns tested during development were not accepted by the TÜİK service. For targeted server-side requests, specify a complete set of series key dimensions.
 
 **Time dimension detail:** `TIME_PERIOD` refers to observation time and is controlled with `start_period` / `end_period`, not placed in the series-key `filters`. `YAYIM_DONEMI` is a separate DSD series dimension.
 
@@ -206,21 +205,22 @@ Response times can vary considerably. Selected development requests took approxi
 
 ## Guides
 
-The README is a starting point, not a complete function reference. Five more detailed guides are already included in the package source and can be built as vignettes:
+The README is a starting point, not a complete function reference. Six guides are included in the package and available on the [documentation website](https://mfatihtuzen.github.io/tuiksdmx/articles/):
 
 | Guide | What it covers |
 |:--|:--|
-| [Getting started](vignettes/getting-started.Rmd) | Discovery, exploration, periods, filtering and retrieval |
-| [Metadata and DSD](vignettes/metadata-and-dsd.Rmd) | Dataflows, dimensions, DSDs, concepts and codelists |
-| [Filtering and performance](vignettes/filtering-and-performance.Rmd) | Full vs partial keys, safeguards and request performance |
-| [Observed availability](vignettes/observed-availability.Rmd) | Codelist domains versus observed codes |
-| [Authentication and secure use](vignettes/authentication.Rmd) | API key options, tokens and reproducible credential handling |
+| [Getting started](https://mfatihtuzen.github.io/tuiksdmx/articles/getting-started.html) | Discovery, exploration, periods, filtering and retrieval |
+| [Metadata and DSD](https://mfatihtuzen.github.io/tuiksdmx/articles/metadata-and-dsd.html) | Dataflows, dimensions, DSDs, concepts and codelists |
+| [Filtering and performance](https://mfatihtuzen.github.io/tuiksdmx/articles/filtering-and-performance.html) | Full vs partial keys, safeguards and request performance |
+| [Observed availability](https://mfatihtuzen.github.io/tuiksdmx/articles/observed-availability.html) | Codelist domains versus observed codes |
+| [Authentication and secure use](https://mfatihtuzen.github.io/tuiksdmx/articles/authentication.html) | API key options, tokens and reproducible credential handling |
+| [Labels and decoding](https://mfatihtuzen.github.io/tuiksdmx/articles/labels-and-decoding.html) | Turkish/English labels, dimension selection and decoding data already retrieved |
 
 After installation, use `browseVignettes("tuiksdmx")` to view built guides in R. For individual function arguments and examples, open R help pages such as `?tuik_get_data`, `?tuik_search_dataflows`, and `?tuik_decode_data`.
 
-**Labels and readable outputs:** `tuik_get_data(..., labels = "tr")` can add Turkish code descriptions; `labels = "en"` or `"both"` are also supported. The `label_dimensions` argument controls which dimensions are decoded. A longer, worked example of label handling and analysis-ready outputs is planned for the documentation website; see the current [Metadata and DSD](vignettes/metadata-and-dsd.Rmd) guide for structural metadata.
+**Labels and readable outputs:** `tuik_get_data(..., labels = "tr")` can add Turkish code descriptions; `labels = "en"` or `"both"` are also supported. The `label_dimensions` argument controls which dimensions are decoded. See the [Labels and decoding guide](https://mfatihtuzen.github.io/tuiksdmx/articles/labels-and-decoding.html) for a worked example.
 
-A dedicated **pkgdown documentation website** is planned to bring the reference pages, existing vignettes and more comprehensive examples together.
+The [pkgdown documentation website](https://mfatihtuzen.github.io/tuiksdmx/) brings together the [function reference](https://mfatihtuzen.github.io/tuiksdmx/reference/), all six guides and the changelog.
 
 ## Scope and limitations
 
@@ -236,4 +236,4 @@ Contributions and reproducible bug reports can be shared through [GitHub Issues]
 
 ## License
 
-`tuiksdmx` is released under the **[MIT License](LICENSE.md)**. See the [full license text](LICENSE.md) for the terms and copyright notice.
+`tuiksdmx` is distributed under the **[MIT License](LICENSE.md)**.
