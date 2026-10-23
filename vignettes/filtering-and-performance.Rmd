@@ -110,10 +110,11 @@ These options protect against **different** situations:
 
 ```{r unbounded}
 # Potentially VERY large: intentionally avoid in routine analysis.
-whole_flow <- tuik_get_data(
-  profile,
-  allow_unbounded = TRUE
-)
+# Deliberately commented out: may download the entire Dataflow.
+# whole_flow <- tuik_get_data(
+#   profile,
+#   allow_unbounded = TRUE
+# )
 ```
 
 With `filters = NULL`, a bounded `all` request does **not** require `allow_all = TRUE`. With incomplete non-NULL filters, the package requires `allow_all = TRUE` (or the legacy local mode). If neither period bound exists, it additionally requires `allow_unbounded = TRUE`. A complete key uses the targeted server-side path; do not infer that its lack of a time bound is necessarily inexpensive.

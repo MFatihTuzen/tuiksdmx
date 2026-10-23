@@ -188,6 +188,43 @@ Without either period bound, such an unfiltered download is rejected unless you 
 # entire_dataflow <- tuik_get_data(id, allow_unbounded = TRUE)
 ```
 
+## A small, empirically tested labour-market example
+
+The CPI examples above illustrate the general workflow. The following additional
+example was exercised against the live service in October 2026. It retrieves
+**one specific series**, rather than requesting all series, using the monthly
+labour-market Dataflow and a complete DSD-driven filter list:
+
+```{r labour-market-example}
+labour_profile <- tuik_flow_profile("DF_ISGUCU_AYLIK_TEMEL_ISGUCU_C")
+
+unemployment_sa <- tuik_get_data(
+  labour_profile,
+  filters = list(
+    REF_AREA = "TR",
+    FREQ = "M",
+    INDICATOR = "ISGI_TIG",
+    ISGUCU_GOSTERGE = "8",
+    TEMEL_YAS = "Y_GE15",
+    SEASONAL_ADJUST = "S",
+    SEX = "_T",
+    FIIL_CALISMA_SURE = "_Z",
+    YAYIM_DONEMI = "2026_01"
+  ),
+  start_period = "2026-01",
+  end_period = "2026-01"
+)
+
+unemployment_sa[, c("TIME_PERIOD", "OBS_VALUE"), drop = FALSE]
+```
+
+The requested statistic is Turkey's seasonally adjusted unemployment rate
+for ages 15 and over, both sexes combined. `YAYIM_DONEMI = "2026_01"`
+selects a **specific publication vintage**, not automatically the latest
+revision. The availability of any particular observation must be checked
+against the live service; defined Codelist values alone cannot guarantee it.
+Do not copy these codes into another Dataflow without inspecting its DSD.
+
 # 6. Intermediate route: select only the dimensions you know
 
 ```{r partial}
