@@ -89,7 +89,8 @@ tuik_available_codes(
   profile,
   dimension = "COICOP_2018",
   start_period = "2026-01",
-  end_period = "2026-03"
+  end_period = "2026-03",
+  allow_all = TRUE  # No filters: explicit broad-download opt-in
 )
 
 tuik_available_codes(
@@ -97,7 +98,8 @@ tuik_available_codes(
   dimension = "COICOP_2018",
   start_period = "2026-01",
   end_period = "2026-03",
-  filters = list(FREQ = "M", REF_AREA = "TR")
+  filters = list(FREQ = "M", REF_AREA = "TR"),
+  allow_all = TRUE  # Partial filters: downloaded data are filtered locally
 )
 } # }
 ```

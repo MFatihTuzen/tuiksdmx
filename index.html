@@ -196,12 +196,47 @@
 </blockquote>
 <p><strong>Time dimension detail:</strong> <code>TIME_PERIOD</code> refers to observation time and is controlled with <code>start_period</code> / <code>end_period</code>, not placed in the series-key <code>filters</code>. <code>YAYIM_DONEMI</code> is a separate DSD series dimension.</p>
 </div>
+<div class="section level3">
+<h3 id="id_6-target-one-observed-cpi-series-verified-example">6. Target one observed CPI series (verified example)<a class="anchor" aria-label="anchor" href="#id_6-target-one-observed-cpi-series-verified-example"></a>
+</h3>
+<p>A complete DSD key avoids the broad download used by partial-filter queries. The following combination was confirmed against the live TÜİK SDMX service on <strong>23 October 2026</strong> for the <strong>January 2026 general CPI index (2025 reference year)</strong>:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cpi_profile</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/tuik_flow_profile.html">tuik_flow_profile</a></span><span class="op">(</span><span class="st">"DF_TUFE_SDMX_TT01"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">cpi_filters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  REF_AREA <span class="op">=</span> <span class="st">"TR"</span>,</span>
+<span>  FREQ <span class="op">=</span> <span class="st">"M"</span>,</span>
+<span>  SINIFLAMA_DUZEYI <span class="op">=</span> <span class="st">"TUFE"</span>,</span>
+<span>  DEGISIM <span class="op">=</span> <span class="st">"1"</span>,</span>
+<span>  OZEL_KAPSAM_TUFE <span class="op">=</span> <span class="st">"_Z"</span>,</span>
+<span>  BASE_PER <span class="op">=</span> <span class="st">"2025"</span>,</span>
+<span>  YAYIM_DONEMI <span class="op">=</span> <span class="st">"2026_01"</span>,</span>
+<span>  COICOP_1999 <span class="op">=</span> <span class="st">"_Z"</span>,</span>
+<span>  COICOP_2018 <span class="op">=</span> <span class="st">"0"</span>,</span>
+<span>  INDICATOR <span class="op">=</span> <span class="st">"F_TFE"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Check that all codes belong to their codelists</span></span>
+<span><span class="va">validation</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/tuik_validate_filters.html">tuik_validate_filters</a></span><span class="op">(</span><span class="va">cpi_profile</span>, filters <span class="op">=</span> <span class="va">cpi_filters</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># A full key is sent to the API; allow_all is not needed</span></span>
+<span><span class="va">cpi_one</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/tuik_get_data.html">tuik_get_data</a></span><span class="op">(</span></span>
+<span>  <span class="va">cpi_profile</span>,</span>
+<span>  filters <span class="op">=</span> <span class="va">cpi_filters</span>,</span>
+<span>  start_period <span class="op">=</span> <span class="st">"2026-01"</span>,</span>
+<span>  end_period <span class="op">=</span> <span class="st">"2026-01"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">cpi_one</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TIME_PERIOD"</span>, <span class="st">"OBS_VALUE"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
+<p>The tested request returned <strong>one observation</strong>, <code>2026-01</code> with <code>OBS_VALUE = 116</code> (about 2.52 seconds in that run). This is a <strong>specific publication vintage</strong> (<code>YAYIM_DONEMI = "2026_01"</code>), not an instruction to always select the latest release. Future values or Dataflow structures may change.</p>
+<p><strong>Valid codes do not guarantee an observed series.</strong> <code><a href="reference/tuik_validate_filters.html">tuik_validate_filters()</a></code> checks codelist membership, <strong>not</strong> whether all selected codes occur together. For example, <code>OZEL_KAPSAM_TUFE = "GT_1"</code> and <code>COICOP_1999 = "0"</code> were individually valid codes, but that combination returned HTTP 404 during the test. The actually observed series used <code>_Z</code> for both dimensions. Inspect bounded observations or use <code><a href="reference/tuik_available_codes.html">tuik_available_codes()</a></code> to explore observed values before composing a full key. Observed codes in isolation still do not guarantee every cross-dimensional combination.</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="metadata-profiles-and-observed-availability">Metadata, profiles and observed availability<a class="anchor" aria-label="anchor" href="#metadata-profiles-and-observed-availability"></a>
 </h2>
 <p>Use a profile when inspecting or querying the same Dataflow repeatedly:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">profile</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/tuik_flow_profile.html">tuik_flow_profile</a></span><span class="op">(</span><span class="st">"DF_TUFE_SDMX_TT01"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Series-key dimensions and their associated codelists</span></span>

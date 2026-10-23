@@ -132,10 +132,11 @@ These options protect against **different** situations:
 ``` r
 
 # Potentially VERY large: intentionally avoid in routine analysis.
-whole_flow <- tuik_get_data(
-  profile,
-  allow_unbounded = TRUE
-)
+# Deliberately commented out: may download the entire Dataflow.
+# whole_flow <- tuik_get_data(
+#   profile,
+#   allow_unbounded = TRUE
+# )
 ```
 
 With `filters = NULL`, a bounded `all` request does **not** require

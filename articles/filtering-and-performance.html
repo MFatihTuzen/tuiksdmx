@@ -218,10 +218,11 @@ period bound supplied</td>
 </table>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Potentially VERY large: intentionally avoid in routine analysis.</span></span>
-<span><span class="va">whole_flow</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tuik_get_data.html">tuik_get_data</a></span><span class="op">(</span></span>
-<span>  <span class="va">profile</span>,</span>
-<span>  allow_unbounded <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="co"># Deliberately commented out: may download the entire Dataflow.</span></span>
+<span><span class="co"># whole_flow &lt;- tuik_get_data(</span></span>
+<span><span class="co">#   profile,</span></span>
+<span><span class="co">#   allow_unbounded = TRUE</span></span>
+<span><span class="co"># )</span></span></code></pre></div>
 <p>With <code>filters = NULL</code>, a bounded <code>all</code> request
 does <strong>not</strong> require <code>allow_all = TRUE</code>. With
 incomplete non-NULL filters, the package requires

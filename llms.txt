@@ -188,6 +188,61 @@ cpi_selected <- tuik_get_data(
 is controlled with `start_period` / `end_period`, not placed in the
 series-key `filters`. `YAYIM_DONEMI` is a separate DSD series dimension.
 
+### 6. Target one observed CPI series (verified example)
+
+A complete DSD key avoids the broad download used by partial-filter
+queries. The following combination was confirmed against the live TÜİK
+SDMX service on **23 October 2026** for the **January 2026 general CPI
+index (2025 reference year)**:
+
+``` r
+
+cpi_profile <- tuik_flow_profile("DF_TUFE_SDMX_TT01")
+
+cpi_filters <- list(
+  REF_AREA = "TR",
+  FREQ = "M",
+  SINIFLAMA_DUZEYI = "TUFE",
+  DEGISIM = "1",
+  OZEL_KAPSAM_TUFE = "_Z",
+  BASE_PER = "2025",
+  YAYIM_DONEMI = "2026_01",
+  COICOP_1999 = "_Z",
+  COICOP_2018 = "0",
+  INDICATOR = "F_TFE"
+)
+
+# Check that all codes belong to their codelists
+validation <- tuik_validate_filters(cpi_profile, filters = cpi_filters)
+
+# A full key is sent to the API; allow_all is not needed
+cpi_one <- tuik_get_data(
+  cpi_profile,
+  filters = cpi_filters,
+  start_period = "2026-01",
+  end_period = "2026-01"
+)
+
+cpi_one[c("TIME_PERIOD", "OBS_VALUE")]
+```
+
+The tested request returned **one observation**, `2026-01` with
+`OBS_VALUE = 116` (about 2.52 seconds in that run). This is a **specific
+publication vintage** (`YAYIM_DONEMI = "2026_01"`), not an instruction
+to always select the latest release. Future values or Dataflow
+structures may change.
+
+**Valid codes do not guarantee an observed series.**
+[`tuik_validate_filters()`](https://MFatihTuzen.github.io/tuiksdmx/reference/tuik_validate_filters.md)
+checks codelist membership, **not** whether all selected codes occur
+together. For example, `OZEL_KAPSAM_TUFE = "GT_1"` and
+`COICOP_1999 = "0"` were individually valid codes, but that combination
+returned HTTP 404 during the test. The actually observed series used
+`_Z` for both dimensions. Inspect bounded observations or use
+[`tuik_available_codes()`](https://MFatihTuzen.github.io/tuiksdmx/reference/tuik_available_codes.md)
+to explore observed values before composing a full key. Observed codes
+in isolation still do not guarantee every cross-dimensional combination.
+
 ## Metadata, profiles and observed availability
 
 Use a profile when inspecting or querying the same Dataflow repeatedly:

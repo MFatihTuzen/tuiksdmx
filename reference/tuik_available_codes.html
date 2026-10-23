@@ -135,7 +135,8 @@ This is observed data availability, not an SDMX ContentConstraint.</p>
 <span class="r-in"><span>  <span class="va">profile</span>,</span></span>
 <span class="r-in"><span>  dimension <span class="op">=</span> <span class="st">"COICOP_2018"</span>,</span></span>
 <span class="r-in"><span>  start_period <span class="op">=</span> <span class="st">"2026-01"</span>,</span></span>
-<span class="r-in"><span>  end_period <span class="op">=</span> <span class="st">"2026-03"</span></span></span>
+<span class="r-in"><span>  end_period <span class="op">=</span> <span class="st">"2026-03"</span>,</span></span>
+<span class="r-in"><span>  allow_all <span class="op">=</span> <span class="cn">TRUE</span>  <span class="co"># No filters: explicit broad-download opt-in</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">tuik_available_codes</span><span class="op">(</span></span></span>
@@ -143,7 +144,8 @@ This is observed data availability, not an SDMX ContentConstraint.</p>
 <span class="r-in"><span>  dimension <span class="op">=</span> <span class="st">"COICOP_2018"</span>,</span></span>
 <span class="r-in"><span>  start_period <span class="op">=</span> <span class="st">"2026-01"</span>,</span></span>
 <span class="r-in"><span>  end_period <span class="op">=</span> <span class="st">"2026-03"</span>,</span></span>
-<span class="r-in"><span>  filters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>FREQ <span class="op">=</span> <span class="st">"M"</span>, REF_AREA <span class="op">=</span> <span class="st">"TR"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  filters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>FREQ <span class="op">=</span> <span class="st">"M"</span>, REF_AREA <span class="op">=</span> <span class="st">"TR"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  allow_all <span class="op">=</span> <span class="cn">TRUE</span>  <span class="co"># Partial filters: downloaded data are filtered locally</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
