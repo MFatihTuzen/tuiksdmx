@@ -1,27 +1,14 @@
 # tuiksdmx
 
-**An authenticated, metadata-driven R client for the TÜİK (Turkish
-Statistical Institute) SDMX REST API.**
+An authenticated, metadata-driven R client for the TÜİK SDMX REST API.
 
 Discover dataflows · Understand structures · Build validated queries ·
 Retrieve statistical data
 
-[![R-CMD-check](https://github.com/MFatihTuzen/tuiksdmx/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/MFatihTuzen/tuiksdmx/actions/workflows/R-CMD-check.yaml)
-[![Documentation](https://img.shields.io/badge/docs-pkgdown-AB2328.svg)](https://mfatihtuzen.github.io/tuiksdmx/)
-[![License:
-MIT](https://img.shields.io/badge/license-MIT-AB2328.svg)](https://MFatihTuzen.github.io/tuiksdmx/LICENSE.md)
-[![R ≥
-4.1.0](https://img.shields.io/badge/R-%E2%89%A5%204.1.0-555555.svg)](https://MFatihTuzen.github.io/tuiksdmx/DESCRIPTION)
-[![Status:
-Development](https://img.shields.io/badge/status-development-AB2328.svg)](https://MFatihTuzen.github.io/tuiksdmx/NEWS.md)
-
-[Get started](#quick-start) · [Installation](#installation) ·
-[Authentication](#authentication) · [Guides](#guides) ·
-[Documentation](https://mfatihtuzen.github.io/tuiksdmx/) ·
-[License](#license)
-
-> **Development release (`0.0.0.9000`).** `tuiksdmx` is currently
-> distributed through GitHub, not CRAN. TÜİK SDMX endpoints require
+> **Version `0.1.0`.** `tuiksdmx` is distributed through GitHub, not
+> CRAN. Consult [GitHub
+> Releases](https://github.com/MFatihTuzen/tuiksdmx/releases) for
+> published tags and release notes. TÜİK SDMX endpoints require
 > authentication. Dataflow structures and service behaviour may change;
 > examples below use a Dataflow verified during development.
 
@@ -43,7 +30,7 @@ assuming every code in a codelist has observations.
 
 ## Installation
 
-Install the development version from GitHub using **pak** (recommended):
+Install the current GitHub version using **pak** (recommended):
 
 ``` r
 
@@ -60,8 +47,10 @@ install.packages("remotes")  # Run once, if not already installed
 remotes::install_github("MFatihTuzen/tuiksdmx")
 ```
 
-Both methods install the GitHub development version; the package is not
-yet on CRAN. Then load it:
+Both methods install the current GitHub version; the package is not yet
+on CRAN. To install the six built vignettes using remotes, use
+`remotes::install_github("MFatihTuzen/tuiksdmx", build_vignettes = TRUE, upgrade = "never")`.
+Then load it:
 
 ``` r
 
@@ -188,61 +177,6 @@ cpi_selected <- tuik_get_data(
 is controlled with `start_period` / `end_period`, not placed in the
 series-key `filters`. `YAYIM_DONEMI` is a separate DSD series dimension.
 
-### 6. Target one observed CPI series (verified example)
-
-A complete DSD key avoids the broad download used by partial-filter
-queries. The following combination was confirmed against the live TÜİK
-SDMX service on **23 October 2026** for the **January 2026 general CPI
-index (2025 reference year)**:
-
-``` r
-
-cpi_profile <- tuik_flow_profile("DF_TUFE_SDMX_TT01")
-
-cpi_filters <- list(
-  REF_AREA = "TR",
-  FREQ = "M",
-  SINIFLAMA_DUZEYI = "TUFE",
-  DEGISIM = "1",
-  OZEL_KAPSAM_TUFE = "_Z",
-  BASE_PER = "2025",
-  YAYIM_DONEMI = "2026_01",
-  COICOP_1999 = "_Z",
-  COICOP_2018 = "0",
-  INDICATOR = "F_TFE"
-)
-
-# Check that all codes belong to their codelists
-validation <- tuik_validate_filters(cpi_profile, filters = cpi_filters)
-
-# A full key is sent to the API; allow_all is not needed
-cpi_one <- tuik_get_data(
-  cpi_profile,
-  filters = cpi_filters,
-  start_period = "2026-01",
-  end_period = "2026-01"
-)
-
-cpi_one[c("TIME_PERIOD", "OBS_VALUE")]
-```
-
-The tested request returned **one observation**, `2026-01` with
-`OBS_VALUE = 116` (about 2.52 seconds in that run). This is a **specific
-publication vintage** (`YAYIM_DONEMI = "2026_01"`), not an instruction
-to always select the latest release. Future values or Dataflow
-structures may change.
-
-**Valid codes do not guarantee an observed series.**
-[`tuik_validate_filters()`](https://MFatihTuzen.github.io/tuiksdmx/reference/tuik_validate_filters.md)
-checks codelist membership, **not** whether all selected codes occur
-together. For example, `OZEL_KAPSAM_TUFE = "GT_1"` and
-`COICOP_1999 = "0"` were individually valid codes, but that combination
-returned HTTP 404 during the test. The actually observed series used
-`_Z` for both dimensions. Inspect bounded observations or use
-[`tuik_available_codes()`](https://MFatihTuzen.github.io/tuiksdmx/reference/tuik_available_codes.md)
-to explore observed values before composing a full key. Observed codes
-in isolation still do not guarantee every cross-dimensional combination.
-
 ## Metadata, profiles and observed availability
 
 Use a profile when inspecting or querying the same Dataflow repeatedly:
@@ -363,12 +297,11 @@ every Dataflow or future service configuration.
 
 The project has a `testthat` suite and an automated [R CMD check
 workflow](https://github.com/MFatihTuzen/tuiksdmx/actions/workflows/R-CMD-check.yaml)
-for Ubuntu, Windows and macOS. The latest local development validation
-reported **534 passing expectations**, **0 errors**, **0 warnings** and
-**1 note** (the local environment could not verify its current time).
-The subsequent three-platform CI run completed successfully; results are
-checks of this development snapshot, not a guarantee of live API
-availability.
+for Ubuntu, Windows and macOS. The last reported local validation of the
+development code returned **534 passing expectations**, **0 errors**,
+**0 warnings**, and **0 notes**; the subsequent three-platform CI run
+completed successfully; results are checks of this development snapshot,
+not a guarantee of live API availability.
 
 Contributions and reproducible bug reports can be shared through [GitHub
 Issues](https://github.com/MFatihTuzen/tuiksdmx/issues). **Do not attach

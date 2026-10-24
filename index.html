@@ -6,6 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>tuiksdmx — Authenticated access to TÜİK SDMX data • tuiksdmx</title>
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" sizes="any" href="favicon.ico">
+<link rel="manifest" href="site.webmanifest">
 <script src="lightswitch.js"></script><script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -13,6 +18,7 @@
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="tuiksdmx — Authenticated access to TÜİK SDMX data">
 <meta name="description" content="Provides an authenticated, metadata-driven R client for the Turkish Statistical Institute (TURKSTAT) SDMX REST API. Supports dataflow discovery, data structure definitions, concepts, codelists, metadata-based filter validation, SDMX query construction, statistical data retrieval, and observation-based availability exploration. Authentication supports an environment variable or an explicitly supplied API key argument.">
 <meta property="og:description" content="Provides an authenticated, metadata-driven R client for the Turkish Statistical Institute (TURKSTAT) SDMX REST API. Supports dataflow discovery, data structure definitions, concepts, codelists, metadata-based filter validation, SDMX query construction, statistical data retrieval, and observation-based availability exploration. Authentication supports an environment variable or an explicitly supplied API key argument.">
+<meta property="og:image" content="https://MFatihTuzen.github.io/tuiksdmx/logo.svg">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -22,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="index.html">tuiksdmx</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,16 +62,15 @@
   </div>
 </nav><div class="container template-home">
 <div class="row">
-  <main id="main" class="col-md-9"><div class="section level1" align="center">
-<div class="page-header"><h1 id="tuiksdmx">tuiksdmx<a class="anchor" aria-label="anchor" href="#tuiksdmx"></a>
-</h1></div>
-<p><strong>An authenticated, metadata-driven R client for the TÜİK (Turkish Statistical Institute) SDMX REST API.</strong></p>
-<p>Discover dataflows · Understand structures · Build validated queries · Retrieve statistical data</p>
-<p><a href="https://github.com/MFatihTuzen/tuiksdmx/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/MFatihTuzen/tuiksdmx/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a> <a href="https://mfatihtuzen.github.io/tuiksdmx/" class="external-link"><img src="https://img.shields.io/badge/docs-pkgdown-AB2328.svg" alt="Documentation"></a> <a href="LICENSE.html"><img src="https://img.shields.io/badge/license-MIT-AB2328.svg" alt="License: MIT"></a> <a href="DESCRIPTION"><img src="https://img.shields.io/badge/R-%E2%89%A5%204.1.0-555555.svg" alt="R ≥ 4.1.0"></a> <a href="NEWS.html"><img src="https://img.shields.io/badge/status-development-AB2328.svg" alt="Status: Development"></a></p>
-<p><a href="#quick-start">Get started</a> · <a href="#installation">Installation</a> · <a href="#authentication">Authentication</a> · <a href="#guides">Guides</a> · <a href="https://mfatihtuzen.github.io/tuiksdmx/" class="external-link">Documentation</a> · <a href="#license">License</a></p>
+  <main id="main" class="col-md-9"><div class="section level1">
+<div class="page-header">
+<img src="logo.svg" class="logo" alt=""><h1 id="tuiksdmx-">tuiksdmx <a class="anchor" aria-label="anchor" href="#tuiksdmx-"></a>
+</h1>
 </div>
+<p>An authenticated, metadata-driven R client for the TÜİK SDMX REST API.</p>
+<p>Discover dataflows · Understand structures · Build validated queries · Retrieve statistical data</p>
 <blockquote>
-<p><strong>Development release (<code>0.0.0.9000</code>).</strong> <code>tuiksdmx</code> is currently distributed through GitHub, not CRAN. TÜİK SDMX endpoints require authentication. Dataflow structures and service behaviour may change; examples below use a Dataflow verified during development.</p>
+<p><strong>Version <code>0.1.0</code>.</strong> <code>tuiksdmx</code> is distributed through GitHub, not CRAN. Consult <a href="https://github.com/MFatihTuzen/tuiksdmx/releases" class="external-link">GitHub Releases</a> for published tags and release notes. TÜİK SDMX endpoints require authentication. Dataflow structures and service behaviour may change; examples below use a Dataflow verified during development.</p>
 </blockquote>
 <div class="section level2">
 <h2 id="why-tuiksdmx">Why tuiksdmx?<a class="anchor" aria-label="anchor" href="#why-tuiksdmx"></a>
@@ -96,7 +101,7 @@
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>Install the development version from GitHub using <strong>pak</strong> (recommended):</p>
+<p>Install the current GitHub version using <strong>pak</strong> (recommended):</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pak"</span><span class="op">)</span>  <span class="co"># Run once, if not already installed</span></span>
 <span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"MFatihTuzen/tuiksdmx"</span><span class="op">)</span></span></code></pre></div>
@@ -104,7 +109,7 @@
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span>  <span class="co"># Run once, if not already installed</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"MFatihTuzen/tuiksdmx"</span><span class="op">)</span></span></code></pre></div>
-<p>Both methods install the GitHub development version; the package is not yet on CRAN. Then load it:</p>
+<p>Both methods install the current GitHub version; the package is not yet on CRAN. To install the six built vignettes using remotes, use <code>remotes::install_github("MFatihTuzen/tuiksdmx", build_vignettes = TRUE, upgrade = "never")</code>. Then load it:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/MFatihTuzen/tuiksdmx" class="external-link">tuiksdmx</a></span><span class="op">)</span></span></code></pre></div>
 <p>For contributors working from a local source checkout, <code>devtools::load_all()</code> is also available.</p>
@@ -196,47 +201,12 @@
 </blockquote>
 <p><strong>Time dimension detail:</strong> <code>TIME_PERIOD</code> refers to observation time and is controlled with <code>start_period</code> / <code>end_period</code>, not placed in the series-key <code>filters</code>. <code>YAYIM_DONEMI</code> is a separate DSD series dimension.</p>
 </div>
-<div class="section level3">
-<h3 id="id_6-target-one-observed-cpi-series-verified-example">6. Target one observed CPI series (verified example)<a class="anchor" aria-label="anchor" href="#id_6-target-one-observed-cpi-series-verified-example"></a>
-</h3>
-<p>A complete DSD key avoids the broad download used by partial-filter queries. The following combination was confirmed against the live TÜİK SDMX service on <strong>23 October 2026</strong> for the <strong>January 2026 general CPI index (2025 reference year)</strong>:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">cpi_profile</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/tuik_flow_profile.html">tuik_flow_profile</a></span><span class="op">(</span><span class="st">"DF_TUFE_SDMX_TT01"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">cpi_filters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>  REF_AREA <span class="op">=</span> <span class="st">"TR"</span>,</span>
-<span>  FREQ <span class="op">=</span> <span class="st">"M"</span>,</span>
-<span>  SINIFLAMA_DUZEYI <span class="op">=</span> <span class="st">"TUFE"</span>,</span>
-<span>  DEGISIM <span class="op">=</span> <span class="st">"1"</span>,</span>
-<span>  OZEL_KAPSAM_TUFE <span class="op">=</span> <span class="st">"_Z"</span>,</span>
-<span>  BASE_PER <span class="op">=</span> <span class="st">"2025"</span>,</span>
-<span>  YAYIM_DONEMI <span class="op">=</span> <span class="st">"2026_01"</span>,</span>
-<span>  COICOP_1999 <span class="op">=</span> <span class="st">"_Z"</span>,</span>
-<span>  COICOP_2018 <span class="op">=</span> <span class="st">"0"</span>,</span>
-<span>  INDICATOR <span class="op">=</span> <span class="st">"F_TFE"</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Check that all codes belong to their codelists</span></span>
-<span><span class="va">validation</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/tuik_validate_filters.html">tuik_validate_filters</a></span><span class="op">(</span><span class="va">cpi_profile</span>, filters <span class="op">=</span> <span class="va">cpi_filters</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># A full key is sent to the API; allow_all is not needed</span></span>
-<span><span class="va">cpi_one</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/tuik_get_data.html">tuik_get_data</a></span><span class="op">(</span></span>
-<span>  <span class="va">cpi_profile</span>,</span>
-<span>  filters <span class="op">=</span> <span class="va">cpi_filters</span>,</span>
-<span>  start_period <span class="op">=</span> <span class="st">"2026-01"</span>,</span>
-<span>  end_period <span class="op">=</span> <span class="st">"2026-01"</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">cpi_one</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TIME_PERIOD"</span>, <span class="st">"OBS_VALUE"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
-<p>The tested request returned <strong>one observation</strong>, <code>2026-01</code> with <code>OBS_VALUE = 116</code> (about 2.52 seconds in that run). This is a <strong>specific publication vintage</strong> (<code>YAYIM_DONEMI = "2026_01"</code>), not an instruction to always select the latest release. Future values or Dataflow structures may change.</p>
-<p><strong>Valid codes do not guarantee an observed series.</strong> <code><a href="reference/tuik_validate_filters.html">tuik_validate_filters()</a></code> checks codelist membership, <strong>not</strong> whether all selected codes occur together. For example, <code>OZEL_KAPSAM_TUFE = "GT_1"</code> and <code>COICOP_1999 = "0"</code> were individually valid codes, but that combination returned HTTP 404 during the test. The actually observed series used <code>_Z</code> for both dimensions. Inspect bounded observations or use <code><a href="reference/tuik_available_codes.html">tuik_available_codes()</a></code> to explore observed values before composing a full key. Observed codes in isolation still do not guarantee every cross-dimensional combination.</p>
-</div>
 </div>
 <div class="section level2">
 <h2 id="metadata-profiles-and-observed-availability">Metadata, profiles and observed availability<a class="anchor" aria-label="anchor" href="#metadata-profiles-and-observed-availability"></a>
 </h2>
 <p>Use a profile when inspecting or querying the same Dataflow repeatedly:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">profile</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/tuik_flow_profile.html">tuik_flow_profile</a></span><span class="op">(</span><span class="st">"DF_TUFE_SDMX_TT01"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Series-key dimensions and their associated codelists</span></span>
@@ -391,7 +361,7 @@
 <div class="section level2">
 <h2 id="development-and-quality">Development and quality<a class="anchor" aria-label="anchor" href="#development-and-quality"></a>
 </h2>
-<p>The project has a <code>testthat</code> suite and an automated <a href="https://github.com/MFatihTuzen/tuiksdmx/actions/workflows/R-CMD-check.yaml" class="external-link">R CMD check workflow</a> for Ubuntu, Windows and macOS. The latest local development validation reported <strong>534 passing expectations</strong>, <strong>0 errors</strong>, <strong>0 warnings</strong> and <strong>1 note</strong> (the local environment could not verify its current time). The subsequent three-platform CI run completed successfully; results are checks of this development snapshot, not a guarantee of live API availability.</p>
+<p>The project has a <code>testthat</code> suite and an automated <a href="https://github.com/MFatihTuzen/tuiksdmx/actions/workflows/R-CMD-check.yaml" class="external-link">R CMD check workflow</a> for Ubuntu, Windows and macOS. The last reported local validation of the development code returned <strong>534 passing expectations</strong>, <strong>0 errors</strong>, <strong>0 warnings</strong>, and <strong>0 notes</strong>; the subsequent three-platform CI run completed successfully; results are checks of this development snapshot, not a guarantee of live API availability.</p>
 <p>Contributions and reproducible bug reports can be shared through <a href="https://github.com/MFatihTuzen/tuiksdmx/issues" class="external-link">GitHub Issues</a>. <strong>Do not attach credentials, tokens or private session files.</strong></p>
 </div>
 <div class="section level2">
@@ -399,7 +369,7 @@
 </h2>
 <p><code>tuiksdmx</code> is distributed under the <strong><a href="LICENSE.html">MIT License</a></strong>.</p>
 </div>
-
+</div>
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
