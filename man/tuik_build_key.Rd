@@ -32,6 +32,10 @@ reliably confirmed for the TÜİK service.
 }
 \examples{
 \dontrun{
+# Requires TUIK_SDMX_API_KEY in the environment.
+library(tuiksdmx)
+profile <- tuik_flow_profile("DF_TUFE_SDMX_TT01")
+
 key <- tuik_build_key(
   profile,
   filters = list(

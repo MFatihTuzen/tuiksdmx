@@ -16,6 +16,30 @@
 #' @export
 #' @examples
 #' \dontrun{
+#' # Requires TUIK_SDMX_API_KEY in the environment.
+#' library(tuiksdmx)
+#' profile <- tuik_flow_profile("DF_TUFE_SDMX_TT01")
+#'
+#' # Use the complete CPI filter set documented in tuik_get_data().
+#' # Check current metadata before reuse; codes and availability may change.
+#' data <- tuik_get_data(
+#'   profile,
+#'   filters = list(
+#'     REF_AREA = "TR",
+#'     FREQ = "M",
+#'     SINIFLAMA_DUZEYI = "2",
+#'     DEGISIM = "1",
+#'     OZEL_KAPSAM_TUFE = "_Z",
+#'     BASE_PER = "2025",
+#'     YAYIM_DONEMI = "2026_01",
+#'     COICOP_1999 = "_Z",
+#'     COICOP_2018 = "01",
+#'     INDICATOR = "F_TFE"
+#'   ),
+#'   start_period = "2026-01",
+#'   end_period = "2026-01"
+#' )
+#'
 #' decoded <- tuik_decode_data(data, profile, dimensions = c("DEGISIM", "FREQ"))
 #' }
 tuik_decode_data <- function(data, profile, dimensions = NULL,
