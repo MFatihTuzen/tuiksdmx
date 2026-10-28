@@ -103,6 +103,93 @@ test_that("invalid explicit API keys are rejected", {
 # Token endpoint responses
 # ------------------------------------------------------------
 
+expect_sanitized_auth_error <- function(error, message, secrets) {
+  expect_s3_class(error, "simpleError")
+  expect_identical(conditionMessage(error), message)
+  expect_null(conditionCall(error))
+  expect_named(unclass(error), c("message", "call"))
+
+  # Inspect output and the entire condition, including its attributes.
+  inspected <- paste(
+    capture.output(print(error)),
+    capture.output(str(error)),
+    rawToChar(serialize(error, NULL, ascii = TRUE)),
+    collapse = "\n"
+  )
+  for (secret in secrets) {
+    expect_false(grepl(secret, inspected, fixed = TRUE))
+  }
+}
+
+test_that("authentication HTTP failures discard sensitive conditions", {
+  secrets <- c("SYNTHETIC_AUTH_API_KEY", "SYNTHETIC_AUTH_BEARER_TOKEN",
+               "SYNTHETIC_AUTH_RESPONSE_BODY")
+  httr2::local_mocked_responses(function(req) {
+    httr2::response(
+      status_code = 400,
+      headers = list("content-type" = "application/json"),
+      body = charToRaw(paste0(
+        '{"error_description":"', paste(secrets, collapse = " "), '"}'
+      ))
+    )
+  })
+
+  error <- tryCatch(tuik_get_access_token(secrets[[1]]), error = identity)
+  expect_sanitized_auth_error(
+    error, "Token endpoint request failed.", secrets
+  )
+})
+
+test_that("authentication transport failures discard sensitive conditions", {
+  secrets <- c("SYNTHETIC_TRANSPORT_API_KEY", "SYNTHETIC_TRANSPORT_TOKEN")
+  httr2::local_mocked_responses(function(req) {
+    stop(structure(
+      list(message = paste(secrets, collapse = " "), call = NULL,
+           request = req, response = secrets, parent = simpleError(secrets[[2]])),
+      class = c("synthetic_auth_error", "error", "condition")
+    ))
+  })
+
+  error <- tryCatch(tuik_get_access_token(secrets[[1]]), error = identity)
+  expect_sanitized_auth_error(
+    error, "Token endpoint request failed.", secrets
+  )
+})
+
+test_that("malformed authentication JSON does not expose response excerpts", {
+  secrets <- c("SYNTHETIC_JSON_API_KEY", "SYNTHETIC_JSON_BEARER_TOKEN")
+  httr2::local_mocked_responses(function(req) {
+    httr2::response(
+      status_code = 200,
+      headers = list("content-type" = "application/json"),
+      body = charToRaw(paste0(
+        '{"access_token":"', secrets[[2]], '", INVALID}'
+      ))
+    )
+  })
+
+  error <- tryCatch(tuik_get_access_token(secrets[[1]]), error = identity)
+  expect_sanitized_auth_error(
+    error, "Token endpoint returned invalid JSON.", secrets
+  )
+})
+
+test_that("authentication errors do not echo response headers", {
+  secrets <- c("SYNTHETIC_HEADER_API_KEY", "SYNTHETIC_HEADER_TOKEN")
+  httr2::local_mocked_responses(function(req) {
+    httr2::response(
+      status_code = 200,
+      headers = list("content-type" = paste("text/html", secrets[[2]])),
+      body = charToRaw(paste(secrets, collapse = " "))
+    )
+  })
+
+  error <- tryCatch(tuik_get_access_token(secrets[[1]]), error = identity)
+  expect_sanitized_auth_error(
+    error, "Token endpoint did not return JSON.", secrets
+  )
+})
+
 test_that("valid token response is parsed", {
 
   mock_response <- httr2::response(

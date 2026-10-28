@@ -146,7 +146,14 @@ tuik_get_access_token <- function(api_key = NULL) {
       retry_on_failure = TRUE
     )
 
-  resp <- httr2::req_perform(req)
+  # httr2 conditions can retain the credential-bearing request and response.
+  # Replace them with a fresh condition without a call or parent condition.
+  resp <- tryCatch(
+    httr2::req_perform(req),
+    error = function(e) {
+      stop("Token endpoint request failed.", call. = FALSE)
+    }
+  )
 
   content_type <- httr2::resp_header(
     resp,
@@ -163,20 +170,21 @@ tuik_get_access_token <- function(api_key = NULL) {
   ) {
 
     stop(
-      paste0(
-        "Token endpoint did not return JSON. Content-Type: ",
-        content_type
-      ),
+      "Token endpoint did not return JSON.",
       call. = FALSE
     )
   }
 
-  body <- httr2::resp_body_json(
-    resp,
-    simplifyVector = TRUE
+  # JSON parser errors can include excerpts of a response containing tokens.
+  body <- tryCatch(
+    httr2::resp_body_json(resp, simplifyVector = TRUE),
+    error = function(e) {
+      stop("Token endpoint returned invalid JSON.", call. = FALSE)
+    }
   )
 
   if (
+    !is.list(body) ||
     is.null(body$access_token) ||
     !is.character(body$access_token) ||
     length(body$access_token) != 1L ||
