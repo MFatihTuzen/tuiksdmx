@@ -80,7 +80,6 @@ jobs:
           upload-snapshots: false
 
       - name: Full R-devel CRAN check
-        id: cran_check_devel
         if: matrix.config.r == 'devel'
         uses: r-lib/actions/check-r-package@v2
         env:
@@ -93,64 +92,3 @@ jobs:
           error-on: '"warning"'
           upload-results: 'true'
           upload-snapshots: false
-
-      - name: Diagnose indexed PDF failure (temporary)
-        id: pdf_diagnostics
-        if: failure() && matrix.config.r == 'devel' && steps.cran_check_devel.outcome == 'failure'
-        shell: bash
-        run: |
-          unset TUIK_SDMX_API_KEY
-          d="$RUNNER_TEMP/tuiksdmx-pdf-diagnostics"
-          mkdir -p "$d"
-
-          capture() {
-            local label="$1" status=0
-            shift
-            "$@" >"$d/$label.stdout.log" 2>"$d/$label.stderr.log" || status=$?
-            printf '%s exit=%s\n' "$label" "$status" | tee -a "$d/statuses.txt"
-          }
-
-          for tool in R pdflatex makeindex texi2dvi kpsewhich tlmgr; do
-            printf '%s: ' "$tool"
-            command -v "$tool" || true
-          done >"$d/tool-paths.txt"
-          capture R-version R --version
-          capture Rd2pdf-help R CMD Rd2pdf --help
-          capture R-texi2dvi-option Rscript --vanilla -e \
-            'cat("texi2dvi option:", getOption("texi2dvi"), "\n")'
-          capture pdflatex-version pdflatex --version
-          capture makeindex-version makeindex </dev/null
-          capture texi2dvi-version texi2dvi --version
-          capture tlmgr-version tlmgr --version
-          capture texlive-packages tlmgr info --only-installed inconsolata courier makeindex
-          capture inconsolata-path kpsewhich inconsolata.sty
-          capture courier-metric-path kpsewhich pcrr8t.tfm
-
-          capture indexed-Rd2pdf R CMD Rd2pdf \
-            --no-preview --internals --no-clean \
-            --build-dir="$d/indexed" \
-            --output="$d/indexed.pdf" "$GITHUB_WORKSPACE"
-
-          # Replay tools in separate copies, preserving the original evidence.
-          replay() {
-            local tool="$1" pattern="$2" n=0 file
-            shift 2
-            [ -d "$d/indexed" ] || return 0
-            cp -a "$d/indexed" "$d/$tool-replay"
-            while IFS= read -r -d '' file; do
-              n=$((n + 1))
-              capture "$tool-replay-$n" bash -c \
-                'cd "$1" || exit; shift; exec "$@"' _ \
-                "$(dirname "$file")" "$tool" "$@" "$(basename "$file")"
-            done < <(find "$d/$tool-replay" -type f -name "$pattern" -print0)
-            printf '%s replay inputs=%s\n' "$tool" "$n" >>"$d/statuses.txt"
-          }
-          replay makeindex '*.idx'
-          replay texi2dvi '*.tex' --pdf
-
-      - name: Upload PDF diagnostics (temporary)
-        if: always() && matrix.config.r == 'devel' && steps.cran_check_devel.outcome == 'failure'
-        uses: actions/upload-artifact@v4
-        with:
-          name: R-devel-indexed-PDF-diagnostics
-          path: ${{ runner.temp }}/tuiksdmx-pdf-diagnostics
