@@ -1,6 +1,6 @@
 Package: tuiksdmx
 Title: Access the Turkish Statistical Institute SDMX REST API
-Version: 0.1.0
+Version: 0.1.1
 Authors@R:
     person("Muhammed Fatih", "Tuzen",
            email = "mfatihtuzen@gmail.com",
