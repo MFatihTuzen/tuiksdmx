@@ -10,15 +10,15 @@ Discover dataflows · Understand structures · Build validated queries · Retrie
 
 [![R-CMD-check](https://github.com/MFatihTuzen/tuiksdmx/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/MFatihTuzen/tuiksdmx/actions/workflows/R-CMD-check.yaml)
 [![Documentation](https://img.shields.io/badge/docs-pkgdown-AB2328.svg)](https://mfatihtuzen.github.io/tuiksdmx/)
-[![License: MIT](https://img.shields.io/badge/license-MIT-AB2328.svg)](LICENSE.md)
+[![License: MIT](https://img.shields.io/badge/license-MIT-AB2328.svg)](https://github.com/MFatihTuzen/tuiksdmx/blob/main/LICENSE.md)
 [![R ≥ 4.1.0](https://img.shields.io/badge/R-%E2%89%A5%204.1.0-555555.svg)](DESCRIPTION)
-[![Version: 0.1.0](https://img.shields.io/badge/version-0.1.0-AB2328.svg)](NEWS.md)
+[![Version: 0.1.1](https://img.shields.io/badge/version-0.1.1-AB2328.svg)](NEWS.md)
 
 [Get started](#quick-start) · [Installation](#installation) · [Authentication](#authentication) · [Guides](#guides) · [Documentation](https://mfatihtuzen.github.io/tuiksdmx/) · [License](#license)
 
 </div>
 
-> **Version `0.1.0`.** `tuiksdmx` is distributed through GitHub, not CRAN. Consult [GitHub Releases](https://github.com/MFatihTuzen/tuiksdmx/releases) for published tags and release notes. TÜİK SDMX endpoints require authentication. Dataflow structures and service behaviour may change; examples below use a Dataflow verified during development.
+> **Version `0.1.1` is being prepared for a first CRAN submission.** The published GitHub release is `v0.1.0`; the package is not yet on CRAN. Consult [GitHub Releases](https://github.com/MFatihTuzen/tuiksdmx/releases) for published tags and release notes. TÜİK SDMX endpoints require authentication. Dataflow structures and service behaviour may change; examples below use a Dataflow verified during development.
 
 ## Why tuiksdmx?
 
@@ -183,6 +183,10 @@ observed
 
 ## Authentication
 
+Users require their own credentials authorized for the TÜİK SDMX service and should follow the provider's terms and applicable attribution requirements for retrieved data. `tuiksdmx` is an independent client; no TÜİK endorsement is claimed.
+
+The official [SDMX Web Service Documentation](https://veriportali.tuik.gov.tr/en/sdmx-web-service-documentation) describes API-key authentication and Bearer-token access. The [TÜİK Legal Notice](https://www.tuik.gov.tr/Kurumsal/Yasal_Uyari) addresses reuse and attribution of TÜİK content. Users must comply with applicable provider terms, including any API-key agreements; the general legal notice does not imply unrestricted API access or override those agreements.
+
 The package supports three ways to provide an API key:
 
 | Method | Example | When to use it |
@@ -232,10 +236,10 @@ The package does **not** claim support for server-side partial/wildcard SDMX key
 
 ## Development and quality
 
-The project has a `testthat` suite and an automated [R CMD check workflow](https://github.com/MFatihTuzen/tuiksdmx/actions/workflows/R-CMD-check.yaml) for Ubuntu, Windows and macOS. The last reported local validation of the development code returned **534 passing expectations**, **0 errors**, **0 warnings**, and **0 notes**; the subsequent three-platform CI run completed successfully; results are checks of this development snapshot, not a guarantee of live API availability.
+The project has a `testthat` suite and an automated [R CMD check workflow](https://github.com/MFatihTuzen/tuiksdmx/actions/workflows/R-CMD-check.yaml) covering R release on Ubuntu, Windows and macOS, plus R-devel on Linux. Before the 0.1.1 version update, pre-submission CI validation passed **559 test expectations**; the Linux R-devel `R CMD check --as-cran` result was **0 errors**, **0 warnings**, and **1 note** ("New submission"), including a successful indexed PDF manual check. These are offline package checks, not a guarantee of live API availability.
 
 Contributions and reproducible bug reports can be shared through [GitHub Issues](https://github.com/MFatihTuzen/tuiksdmx/issues). **Do not attach credentials, tokens or private session files.**
 
 ## License
 
-`tuiksdmx` is distributed under the **[MIT License](LICENSE.md)**.
+`tuiksdmx` is distributed under the **[MIT License](https://github.com/MFatihTuzen/tuiksdmx/blob/main/LICENSE.md)**. This license applies to the package code, not to TÜİK datasets.
