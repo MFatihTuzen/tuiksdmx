@@ -1,5 +1,17 @@
 # Changelog
 
+## tuiksdmx 0.1.1
+
+- Sanitize authentication HTTP and JSON parsing errors so credentials
+  and sensitive response contents are not exposed in error conditions.
+- Require testthat \>= 3.1.7 for the mocked test suite.
+- Make SDMX help examples self-contained while retaining
+  authenticated-example safeguards.
+- Exclude local credentials, private keys, logs, caches and development
+  archives from source builds.
+- Add Linux R-devel CRAN validation, including indexed PDF manual
+  checks.
+
 ## tuiksdmx 0.1.0
 
 ### Initial release
