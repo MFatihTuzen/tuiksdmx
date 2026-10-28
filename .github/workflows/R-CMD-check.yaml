@@ -21,6 +21,7 @@ jobs:
           - {os: ubuntu-latest, r: 'release'}
           - {os: windows-latest, r: 'release'}
           - {os: macos-latest, r: 'release'}
+          - {os: ubuntu-24.04, r: 'devel'}
     env:
       R_KEEP_PKG_SOURCE: yes
       # No TÜİK credentials are provided to CI. Tests must use local mocks.
@@ -32,10 +33,60 @@ jobs:
           r-version: ${{ matrix.config.r }}
           use-public-rspm: true
       - uses: r-lib/actions/setup-pandoc@v2
+      - name: Install CRAN validation tools
+        if: matrix.config.r == 'devel'
+        run: |
+          test -z "${TUIK_SDMX_API_KEY+x}"
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y qpdf tidy texinfo
+
+      - uses: r-lib/actions/setup-tinytex@v2
+        if: matrix.config.r == 'devel'
+
+      - name: Install and verify manual dependencies
+        if: matrix.config.r == 'devel'
+        run: |
+          tlmgr update --self
+          tlmgr install inconsolata
+          kpsewhich inconsolata.sty
+          pdflatex --version
+          texi2dvi --version
+          qpdf --version
+          tidy --version
+
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::rcmdcheck
           needs: check
+      - name: Verify offline mocked tests
+        if: matrix.config.r == 'devel'
+        shell: Rscript {0}
+        run: |
+          stopifnot(is.na(Sys.getenv("TUIK_SDMX_API_KEY", unset = NA_character_)))
+          Sys.unsetenv("TUIK_SDMX_API_KEY")
+          for (f in c("curl_fetch_memory", "curl_fetch_disk",
+                      "curl_fetch_stream", "multi_run")) {
+            trace(f,
+              tracer = quote(stop("Unexpected network call in offline tests")),
+              print = FALSE, where = asNamespace("curl"))
+          }
+          testthat::test_local(".", reporter = "check")
+
       - uses: r-lib/actions/check-r-package@v2
+        if: matrix.config.r != 'devel'
         with:
+          upload-snapshots: false
+
+      - name: Full R-devel CRAN check
+        if: matrix.config.r == 'devel'
+        uses: r-lib/actions/check-r-package@v2
+        env:
+          _R_CHECK_CRAN_INCOMING_: 'true'
+          _R_CHECK_CRAN_INCOMING_REMOTE_: 'true'
+          _R_CHECK_FORCE_SUGGESTS_: 'true'
+        with:
+          args: 'c("--as-cran")'
+          build_args: 'character()'
+          error-on: '"warning"'
+          upload-results: 'true'
           upload-snapshots: false
