@@ -8,3 +8,11 @@
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
+^\.Renviron(\..*)?$
+^\.env(\..*)?$
+(^|/)[^/]+\.(pem|key)$
+(^|/)id_(rsa|dsa|ecdsa|ed25519)$
+^[^/]+\.Rout(\.fail)?$
+^[^/]+\.log$
+^\.cache($|/)
+^[^/]+\.tar\.gz$
