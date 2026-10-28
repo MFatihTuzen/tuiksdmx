@@ -111,6 +111,10 @@ availability.
 
 ``` r
 if (FALSE) { # \dontrun{
+# Requires TUIK_SDMX_API_KEY in the environment.
+library(tuiksdmx)
+profile <- tuik_flow_profile("DF_TUFE_SDMX_TT01")
+
 data <- tuik_get_data(
   profile,
   filters = list(
