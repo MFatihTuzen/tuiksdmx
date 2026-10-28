@@ -47,7 +47,8 @@ jobs:
         if: matrix.config.r == 'devel'
         run: |
           tlmgr update --self
-          tlmgr install inconsolata courier
+          tlmgr install inconsolata courier makeindex
+          command -v makeindex
           kpsewhich inconsolata.sty
           kpsewhich pcrr8t.tfm
           pdflatex --version
