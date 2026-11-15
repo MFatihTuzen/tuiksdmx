@@ -5,12 +5,18 @@ An authenticated, metadata-driven R client for the TÜİK SDMX REST API.
 Discover dataflows · Understand structures · Build validated queries ·
 Retrieve statistical data
 
-> **Version `0.1.0`.** `tuiksdmx` is distributed through GitHub, not
-> CRAN. Consult [GitHub
-> Releases](https://github.com/MFatihTuzen/tuiksdmx/releases) for
-> published tags and release notes. TÜİK SDMX endpoints require
-> authentication. Dataflow structures and service behaviour may change;
-> examples below use a Dataflow verified during development.
+[![CRAN
+version](https://www.r-pkg.org/badges/version/tuiksdmx)](https://cran.r-project.org/package=tuiksdmx)
+[![CRAN
+checks](https://badges.cranchecks.info/worst/tuiksdmx.svg)](https://cran.r-project.org/web/checks/check_results_tuiksdmx.html)
+
+> **Version `0.1.1` is available on
+> [CRAN](https://cran.r-project.org/package=tuiksdmx).** See the [GitHub
+> release
+> `v0.1.1`](https://github.com/MFatihTuzen/tuiksdmx/releases/tag/v0.1.1)
+> for release notes. TÜİK SDMX endpoints require authentication.
+> Dataflow structures and service behaviour may change; examples below
+> use a Dataflow verified during development.
 
 ## Why tuiksdmx?
 
@@ -30,7 +36,16 @@ assuming every code in a codelist has observations.
 
 ## Installation
 
-Install the current GitHub version using **pak** (recommended):
+Install the stable release from CRAN (recommended):
+
+``` r
+
+install.packages("tuiksdmx")
+```
+
+### Development version
+
+To install the development version from GitHub, use **pak**:
 
 ``` r
 
@@ -47,8 +62,8 @@ install.packages("remotes")  # Run once, if not already installed
 remotes::install_github("MFatihTuzen/tuiksdmx")
 ```
 
-Both methods install the current GitHub version; the package is not yet
-on CRAN. To install the six built vignettes using remotes, use
+Both GitHub methods install the development version. To build and
+install its six vignettes using remotes, use
 `remotes::install_github("MFatihTuzen/tuiksdmx", build_vignettes = TRUE, upgrade = "never")`.
 Then load it:
 
@@ -297,11 +312,13 @@ every Dataflow or future service configuration.
 
 The project has a `testthat` suite and an automated [R CMD check
 workflow](https://github.com/MFatihTuzen/tuiksdmx/actions/workflows/R-CMD-check.yaml)
-for Ubuntu, Windows and macOS. The last reported local validation of the
-development code returned **534 passing expectations**, **0 errors**,
-**0 warnings**, and **0 notes**; the subsequent three-platform CI run
-completed successfully; results are checks of this development snapshot,
-not a guarantee of live API availability.
+covering R release on Ubuntu, Windows and macOS, plus R-devel on Linux.
+See the [CRAN check
+results](https://cran.r-project.org/web/checks/check_results_tuiksdmx.html)
+for the published package and [GitHub
+Actions](https://github.com/MFatihTuzen/tuiksdmx/actions/workflows/R-CMD-check.yaml)
+for development checks. These are package checks, not a guarantee of
+live API availability.
 
 Contributions and reproducible bug reports can be shared through [GitHub
 Issues](https://github.com/MFatihTuzen/tuiksdmx/issues). **Do not attach
@@ -310,4 +327,4 @@ credentials, tokens or private session files.**
 ## License
 
 `tuiksdmx` is distributed under the **[MIT
-License](https://MFatihTuzen.github.io/tuiksdmx/LICENSE.md)**.
+License](https://github.com/MFatihTuzen/tuiksdmx/blob/main/LICENSE.md)**.

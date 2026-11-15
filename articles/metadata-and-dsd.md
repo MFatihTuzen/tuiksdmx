@@ -11,8 +11,10 @@ attributes.
 
 The examples use the CPI Dataflow `DF_TUFE_SDMX_TT01`, which was tested
 during package development. Live identifiers, descriptions and
-structural references may change. Nothing in this document assumes that
-the package is available from CRAN.
+structural references may change. Install the stable release from
+[CRAN](https://cran.r-project.org/package=tuiksdmx); see [Getting
+started](https://MFatihTuzen.github.io/tuiksdmx/articles/getting-started.md)
+for installation instructions.
 
 ## Authentication
 

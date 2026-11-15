@@ -14,7 +14,7 @@ observations can change on the live service.
 
 **Learning goals**
 
-1.  Install from GitHub and configure an API key outside R scripts.
+1.  Install from CRAN and configure an API key outside R scripts.
 2.  Find Dataflows by browsing or searching the catalogue, then inspect
     one without downloading observations.
 3.  Distinguish series dimensions from `TIME_PERIOD` and SDMX
@@ -26,8 +26,17 @@ observations can change on the live service.
 
 ## 1. Install and authenticate
 
-Install the development version from the public GitHub repository. You
-can use either installation method (you do **not** need both):
+Version `0.1.1` is available on
+[CRAN](https://cran.r-project.org/package=tuiksdmx). Install the stable
+release (recommended):
+
+``` r
+
+install.packages("tuiksdmx")
+```
+
+For the development version from GitHub, use either of the following
+methods (you do **not** need both):
 
 ``` r
 
@@ -42,8 +51,6 @@ remotes::install_github("MFatihTuzen/tuiksdmx")
 
 If you are developing from a locally checked-out package directory, you
 can instead use `devtools::load_all()` or `pak::local_install(".")`.
-This is a GitHub development version (`0.0.0.9000`), not a CRAN
-installation.
 
 The API service requires credentials. The package supports **three
 methods**; `.Renviron` is recommended for routine use but is **not

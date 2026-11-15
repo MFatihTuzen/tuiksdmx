@@ -2,6 +2,8 @@
 
 ## tuiksdmx 0.1.1
 
+CRAN release: 2026-11-13
+
 - Sanitize authentication HTTP and JSON parsing errors so credentials
   and sensitive response contents are not exposed in error conditions.
 - Require testthat \>= 3.1.7 for the mocked test suite.
