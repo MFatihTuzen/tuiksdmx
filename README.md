@@ -12,13 +12,14 @@ Discover dataflows · Understand structures · Build validated queries · Retrie
 [![Documentation](https://img.shields.io/badge/docs-pkgdown-AB2328.svg)](https://mfatihtuzen.github.io/tuiksdmx/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-AB2328.svg)](https://github.com/MFatihTuzen/tuiksdmx/blob/main/LICENSE.md)
 [![R ≥ 4.1.0](https://img.shields.io/badge/R-%E2%89%A5%204.1.0-555555.svg)](DESCRIPTION)
-[![Version: 0.1.1](https://img.shields.io/badge/version-0.1.1-AB2328.svg)](NEWS.md)
+[![CRAN version](https://www.r-pkg.org/badges/version/tuiksdmx)](https://cran.r-project.org/package=tuiksdmx)
+[![CRAN checks](https://badges.cranchecks.info/worst/tuiksdmx.svg)](https://cran.r-project.org/web/checks/check_results_tuiksdmx.html)
 
 [Get started](#quick-start) · [Installation](#installation) · [Authentication](#authentication) · [Guides](#guides) · [Documentation](https://mfatihtuzen.github.io/tuiksdmx/) · [License](#license)
 
 </div>
 
-> **Version `0.1.1` is being prepared for a first CRAN submission.** The published GitHub release is `v0.1.0`; the package is not yet on CRAN. Consult [GitHub Releases](https://github.com/MFatihTuzen/tuiksdmx/releases) for published tags and release notes. TÜİK SDMX endpoints require authentication. Dataflow structures and service behaviour may change; examples below use a Dataflow verified during development.
+> **Version `0.1.1` is available on [CRAN](https://cran.r-project.org/package=tuiksdmx).** See the [GitHub release `v0.1.1`](https://github.com/MFatihTuzen/tuiksdmx/releases/tag/v0.1.1) for release notes. TÜİK SDMX endpoints require authentication. Dataflow structures and service behaviour may change; examples below use a Dataflow verified during development.
 
 ## Why tuiksdmx?
 
@@ -32,7 +33,15 @@ The package also offers **observed availability**: inspect which dimension codes
 
 ## Installation
 
-Install the current GitHub version using **pak** (recommended):
+Install the stable release from CRAN (recommended):
+
+```r
+install.packages("tuiksdmx")
+```
+
+### Development version
+
+To install the development version from GitHub, use **pak**:
 
 ```r
 install.packages("pak")  # Run once, if not already installed
@@ -46,7 +55,7 @@ install.packages("remotes")  # Run once, if not already installed
 remotes::install_github("MFatihTuzen/tuiksdmx")
 ```
 
-Both methods install the current GitHub version; the package is not yet on CRAN. To install the six built vignettes using remotes, use `remotes::install_github("MFatihTuzen/tuiksdmx", build_vignettes = TRUE, upgrade = "never")`. Then load it:
+Both GitHub methods install the development version. To build and install its six vignettes using remotes, use `remotes::install_github("MFatihTuzen/tuiksdmx", build_vignettes = TRUE, upgrade = "never")`. Then load it:
 
 ```r
 library(tuiksdmx)
@@ -236,7 +245,7 @@ The package does **not** claim support for server-side partial/wildcard SDMX key
 
 ## Development and quality
 
-The project has a `testthat` suite and an automated [R CMD check workflow](https://github.com/MFatihTuzen/tuiksdmx/actions/workflows/R-CMD-check.yaml) covering R release on Ubuntu, Windows and macOS, plus R-devel on Linux. Before the 0.1.1 version update, pre-submission CI validation passed **559 test expectations**; the Linux R-devel `R CMD check --as-cran` result was **0 errors**, **0 warnings**, and **1 note** ("New submission"), including a successful indexed PDF manual check. These are offline package checks, not a guarantee of live API availability.
+The project has a `testthat` suite and an automated [R CMD check workflow](https://github.com/MFatihTuzen/tuiksdmx/actions/workflows/R-CMD-check.yaml) covering R release on Ubuntu, Windows and macOS, plus R-devel on Linux. See the [CRAN check results](https://cran.r-project.org/web/checks/check_results_tuiksdmx.html) for the published package and [GitHub Actions](https://github.com/MFatihTuzen/tuiksdmx/actions/workflows/R-CMD-check.yaml) for development checks. These are package checks, not a guarantee of live API availability.
 
 Contributions and reproducible bug reports can be shared through [GitHub Issues](https://github.com/MFatihTuzen/tuiksdmx/issues). **Do not attach credentials, tokens or private session files.**
 
