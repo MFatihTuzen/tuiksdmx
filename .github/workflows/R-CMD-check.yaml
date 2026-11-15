@@ -83,8 +83,8 @@ jobs:
         if: matrix.config.r == 'devel'
         uses: r-lib/actions/check-r-package@v2
         env:
-          _R_CHECK_CRAN_INCOMING_: 'true'
-          _R_CHECK_CRAN_INCOMING_REMOTE_: 'true'
+          _R_CHECK_CRAN_INCOMING_: ${{ github.event_name == 'workflow_dispatch' && 'true' || 'false' }}
+          _R_CHECK_CRAN_INCOMING_REMOTE_: ${{ github.event_name == 'workflow_dispatch' && 'true' || 'false' }}
           _R_CHECK_FORCE_SUGGESTS_: 'true'
         with:
           args: 'c("--as-cran")'
