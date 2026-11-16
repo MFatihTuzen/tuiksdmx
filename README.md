@@ -14,6 +14,7 @@ Discover dataflows · Understand structures · Build validated queries · Retrie
 [![R ≥ 4.1.0](https://img.shields.io/badge/R-%E2%89%A5%204.1.0-555555.svg)](DESCRIPTION)
 [![CRAN version](https://www.r-pkg.org/badges/version/tuiksdmx)](https://cran.r-project.org/package=tuiksdmx)
 [![CRAN checks](https://badges.cranchecks.info/worst/tuiksdmx.svg)](https://cran.r-project.org/web/checks/check_results_tuiksdmx.html)
+[![Mentioned in Awesome Official Statistics](https://awesome.re/mentioned-badge.svg)](https://github.com/SNStatComp/awesome-official-statistics-software)
 
 [Get started](#quick-start) · [Installation](#installation) · [Authentication](#authentication) · [Guides](#guides) · [Documentation](https://mfatihtuzen.github.io/tuiksdmx/) · [License](#license)
 
